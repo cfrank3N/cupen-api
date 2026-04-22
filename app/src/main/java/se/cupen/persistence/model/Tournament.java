@@ -7,7 +7,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,17 +20,13 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Player {
+public class Tournament {
 
   @Id
   @UuidGenerator
   private UUID id;
-  private String name;
-  private String city;
-  private long pricemoney;
-  private Integer rating;
-
-  @ManyToMany(mappedBy = "players")
+  private int year;
+  @OneToMany(mappedBy = "tournament")
   private List<Team> teams;
 
 }
