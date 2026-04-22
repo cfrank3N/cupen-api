@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import se.cupen.dto.MatchDTO;
+import se.cupen.exception.ValidationException;
 import se.cupen.persistence.repository.MatchEventRepo;
 import se.cupen.persistence.repository.MatchRepo;
 import se.cupen.persistence.repository.PlayerRepo;
@@ -25,6 +26,7 @@ public class StatisticsService {
   public List<MatchDTO> findAllMatchesPlayedByPlayer(String playerId) {
 
     // TODO: Finish this after creating responseobject and exceptionhandler
+    throw new ValidationException("Not yet implemented");
 
   }
 }
