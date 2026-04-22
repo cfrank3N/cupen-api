@@ -28,6 +28,8 @@ public class MatchMapper {
         .teamA(TeamMapper.toDTO(match.getTeamA()))
         .teamB(TeamMapper.toDTO(match.getTeamB()))
         .events(match.getEvents().stream().map(event -> MatchEventMapper.toDTO(event)).toList())
+        .matchType(match.getMatchType())
+        .group(match.getMatchGroup())
         .result(result)
         .build();
   }

@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import se.cupen.util.MatchGroup;
+import se.cupen.util.MatchType;
 
 @Getter
 @Setter
@@ -23,5 +25,7 @@ public class MatchDTO {
   private TeamDTO teamB;
   private List<MatchEventDTO> events;
   private String result;
+  private MatchType matchType;
+  private MatchGroup group;
 
 }

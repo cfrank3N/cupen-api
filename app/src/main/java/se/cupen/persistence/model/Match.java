@@ -18,6 +18,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import se.cupen.util.MatchGroup;
+import se.cupen.util.MatchType;
 
 @Entity
 @Getter
@@ -45,5 +47,8 @@ public class Match {
   private List<MatchEvent> events = new ArrayList<>();
 
   private Instant playedAt;
+
+  private MatchType matchType;
+  private MatchGroup matchGroup;
 
 }
