@@ -28,9 +28,11 @@ public class Team {
   @Id
   @UuidGenerator
   private UUID id;
+
   @ManyToMany
   @JoinTable(name = "team_players", joinColumns = @JoinColumn(name = "team_id"), inverseJoinColumns = @JoinColumn(name = "player_id"))
   private List<Player> players;
+
   @ManyToOne
   @JoinColumn(name = "tournament_id")
   private Tournament tournament;

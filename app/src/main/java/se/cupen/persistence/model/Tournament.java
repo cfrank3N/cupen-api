@@ -25,7 +25,9 @@ public class Tournament {
   @Id
   @UuidGenerator
   private UUID id;
+
   private int year;
+
   @OneToMany(mappedBy = "tournament")
   private List<Team> teams;
 
