@@ -19,6 +19,8 @@ import se.cupen.persistence.repository.PlayerRepo;
 import se.cupen.persistence.repository.TeamRepo;
 import se.cupen.persistence.repository.TournamentRepo;
 import se.cupen.util.EventType;
+import se.cupen.util.MatchGroup;
+import se.cupen.util.MatchType;
 
 @Component
 @Profile("dev")
@@ -101,6 +103,8 @@ public class DatabaseSeeder {
         .teamA(teamA)
         .teamB(teamB)
         .tournament(tournament)
+        .matchGroup(MatchGroup.GROUP_B)
+        .matchType(MatchType.GROUP_STAGE)
         .build();
 
     MatchEvent eventOne = MatchEvent.builder()
