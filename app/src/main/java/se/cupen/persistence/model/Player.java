@@ -1,5 +1,6 @@
 package se.cupen.persistence.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +32,7 @@ public class Player {
   private Integer rating;
 
   @ManyToMany(mappedBy = "players")
-  private List<Team> teams;
+  @Builder.Default
+  private List<Team> teams = new ArrayList<>();
 
 }

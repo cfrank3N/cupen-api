@@ -1,5 +1,6 @@
 package se.cupen.persistence.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,7 +32,8 @@ public class Team {
 
   @ManyToMany
   @JoinTable(name = "team_players", joinColumns = @JoinColumn(name = "team_id"), inverseJoinColumns = @JoinColumn(name = "player_id"))
-  private List<Player> players;
+  @Builder.Default
+  private List<Player> players = new ArrayList<>();
 
   @ManyToOne
   @JoinColumn(name = "tournament_id")

@@ -1,6 +1,7 @@
 package se.cupen.persistence.model;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
@@ -29,6 +30,7 @@ public class Tournament {
   private int year;
 
   @OneToMany(mappedBy = "tournament")
-  private List<Team> teams;
+  @Builder.Default
+  private List<Team> teams = new ArrayList<>();
 
 }

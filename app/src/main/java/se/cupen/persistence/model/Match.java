@@ -1,6 +1,7 @@
 package se.cupen.persistence.model;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,7 +41,8 @@ public class Match {
   private Team teamB;
 
   @OneToMany(mappedBy = "match", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private List<MatchEvent> events;
+  @Builder.Default
+  private List<MatchEvent> events = new ArrayList<>();
 
   private Instant playedAt;
 
