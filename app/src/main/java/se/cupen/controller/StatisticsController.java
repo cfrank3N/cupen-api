@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import se.cupen.dto.PlayerSpecificMatchDTO;
+import se.cupen.dto.PlayerSpecificTeamDTO;
 import se.cupen.service.StatisticsService;
 import se.cupen.util.ResponseData;
 
@@ -36,6 +37,12 @@ public class StatisticsController {
   @GetMapping("/player/{id}/goals")
   public ResponseEntity<ResponseData<Long>> fetchPlayersScoredGoals(@PathVariable String id) {
     return ResponseEntity.ok(statisticsService.findPlayersScoredGoals(id));
+  }
+
+  @GetMapping("/player/{id}/teams")
+  public ResponseEntity<ResponseData<List<PlayerSpecificTeamDTO>>> fetchAllPlayersFormerTeams(
+      @PathVariable String id) {
+    return ResponseEntity.ok(statisticsService.findAllTeamsByPlayer(id));
   }
 
 }

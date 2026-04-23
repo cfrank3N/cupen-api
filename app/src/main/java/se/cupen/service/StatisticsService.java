@@ -2,13 +2,18 @@ package se.cupen.service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import se.cupen.dto.PlayerSpecificMatchDTO;
+import se.cupen.dto.PlayerSpecificTeamDTO;
 import se.cupen.exception.ValidationException;
 import se.cupen.mapper.MatchMapper;
+import se.cupen.mapper.PlayerMapper;
+import se.cupen.mapper.TeamMapper;
 import se.cupen.persistence.model.Match;
 import se.cupen.persistence.model.MatchEvent;
 import se.cupen.persistence.model.Player;
@@ -62,15 +67,95 @@ public class StatisticsService {
 
   public ResponseData<Long> findPlayersScoredGoals(String playerId) {
 
-    Player player = playerRepo.findById(validateIdAndTransformToUuid(playerId))
-        .orElseThrow(() -> new ValidationException("Player not found", 404));
+    Player player = findPlayerById(playerId);
 
-    List<MatchEvent> playersGoals = matchEventRepo.findAllByPlayerId(player.getId())
-        .orElseThrow(() -> new ValidationException("Player has no events registered", 404));
+    List<MatchEvent> playersGoals = findPlayersGoals(player.getId());
 
     Long scoredGoals = playersGoals.stream().filter(event -> event.getType().equals(EventType.GOAL)).count();
 
     return ResponseData.successful(scoredGoals, "Scored goals fetched");
+
+  }
+
+  public ResponseData<List<PlayerSpecificTeamDTO>> findAllTeamsByPlayer(String playerId) {
+
+    Player player = findPlayerById(playerId);
+
+    List<Team> teams = player.getTeams();
+
+    List<Match> allMatches = matchRepo.findAll();
+
+    List<PlayerSpecificTeamDTO> teamStats = teams.stream()
+        .map(team -> buildTeamStats(team, allMatches))
+        .toList();
+
+    return ResponseData.successful(teamStats, "Team stats fetched");
+
+  }
+
+  private PlayerSpecificTeamDTO buildTeamStats(Team team, List<Match> matches) {
+
+    List<Match> teamMatches = matches.stream()
+        .filter(match -> match.getTeamA().equals(team) || match.getTeamB().equals(team)).toList();
+
+    int wins = 0;
+    int losses = 0;
+    int draws = 0;
+    int scoredGoals = 0;
+    int concededGoals = 0;
+
+    for (Match match : teamMatches) {
+
+      UUID teamId = team.getId();
+      UUID opponentId = match.getTeamA().equals(team)
+          ? match.getTeamB().getId()
+          : match.getTeamA().getId();
+
+      long teamGoals = match.getEvents().stream()
+          .filter(event -> event.getType().equals(EventType.GOAL) && event.getTeam().getId().equals(teamId))
+          .count();
+
+      long opponentGoals = match.getEvents().stream()
+          .filter(event -> event.getType().equals(EventType.GOAL) && event.getTeam().getId().equals(opponentId))
+          .count();
+
+      scoredGoals += teamGoals;
+      concededGoals += opponentGoals;
+
+      if (teamGoals == opponentGoals) {
+        draws++;
+      } else if (teamGoals > opponentGoals) {
+        wins++;
+      } else {
+        losses++;
+      }
+
+    }
+
+    return PlayerSpecificTeamDTO.builder()
+        .id(team.getId().toString())
+        .players(team.getPlayers().stream().map(PlayerMapper::toDTO).toList())
+        .tournamentYear(team.getTournament().getYear())
+        .wins(wins)
+        .losses(losses)
+        .draws(draws)
+        .scoredGoals(scoredGoals)
+        .concededGoals(concededGoals)
+        .build();
+
+  }
+
+  private Player findPlayerById(String playerId) {
+
+    return playerRepo.findById(validateIdAndTransformToUuid(playerId))
+        .orElseThrow(() -> new ValidationException("Player not found", 404));
+
+  }
+
+  private List<MatchEvent> findPlayersGoals(UUID playerId) {
+
+    return matchEventRepo.findAllByPlayerId(playerId)
+        .orElseThrow(() -> new ValidationException("Player has no events registered", 404));
 
   }
 
