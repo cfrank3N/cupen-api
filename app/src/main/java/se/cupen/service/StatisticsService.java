@@ -199,6 +199,12 @@ public class StatisticsService {
 
   }
 
+  public ResponseData<List<HeadToHeadPlayerStats>> findStatsAgainsAllPlayers(String playerId) {
+
+    // TODO: Implement this method
+    throw new ValidationException("Not yet implemented", 204);
+  }
+
   /**
    * @param team
    * @param matches
