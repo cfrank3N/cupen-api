@@ -53,4 +53,14 @@ public class StatisticsController {
     return ResponseEntity.ok(statisticsService.findCompressedStatsForPlayer(id));
   }
 
+  @GetMapping("/player/{id}/biggestwin")
+  public ResponseEntity<ResponseData<PlayerSpecificMatchDTO>> fetchBiggestWinByPlayer(@PathVariable String id) {
+    return ResponseEntity.ok(statisticsService.findBiggestWinByPlayer(id));
+  }
+
+  @GetMapping("/player/{id}/biggestloss")
+  public ResponseEntity<ResponseData<PlayerSpecificMatchDTO>> fetchBiggestLossByPlayer(@PathVariable String id) {
+    return ResponseEntity.ok(statisticsService.findBiggestLossByPlayer(id));
+  }
+
 }

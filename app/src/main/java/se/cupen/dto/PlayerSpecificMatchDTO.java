@@ -29,5 +29,6 @@ public class PlayerSpecificMatchDTO {
   private MatchResult result;
   private MatchType matchType;
   private MatchGroup group;
+  private Integer goalDifference;
 
 }

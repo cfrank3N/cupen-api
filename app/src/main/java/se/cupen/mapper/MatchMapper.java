@@ -63,6 +63,9 @@ public class MatchMapper {
                 MatchResult result = winner == null ? MatchResult.DRAW
                                 : playerTeams.contains(winner) ? MatchResult.WIN : MatchResult.LOSS;
 
+                boolean playerIsTeamA = playerTeams.contains(match.getTeamA());
+                int goalDifference = (int) (playerIsTeamA ? goalsTeamA - goalsTeamB : goalsTeamB - goalsTeamA);
+
                 return PlayerSpecificMatchDTO.builder()
                                 .id(match.getId().toString())
                                 .playedAt(match.getPlayedAt())
@@ -74,6 +77,7 @@ public class MatchMapper {
                                 .group(match.getMatchGroup())
                                 .score(score)
                                 .result(result)
+                                .goalDifference(goalDifference)
                                 .build();
         }
 

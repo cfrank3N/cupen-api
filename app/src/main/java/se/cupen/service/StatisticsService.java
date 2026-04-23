@@ -2,9 +2,7 @@ package se.cupen.service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -14,7 +12,6 @@ import se.cupen.dto.SimplePlayerStatsDTO;
 import se.cupen.exception.ValidationException;
 import se.cupen.mapper.MatchMapper;
 import se.cupen.mapper.PlayerMapper;
-import se.cupen.mapper.TeamMapper;
 import se.cupen.persistence.model.Match;
 import se.cupen.persistence.model.MatchEvent;
 import se.cupen.persistence.model.Player;
@@ -23,6 +20,7 @@ import se.cupen.persistence.repository.MatchEventRepo;
 import se.cupen.persistence.repository.MatchRepo;
 import se.cupen.persistence.repository.PlayerRepo;
 import se.cupen.util.EventType;
+import se.cupen.util.MatchResult;
 import se.cupen.util.ResponseData;
 
 @Service
@@ -128,6 +126,31 @@ public class StatisticsService {
         .build();
 
     return ResponseData.successful(stats, "Simple stats fetched");
+  }
+
+  public ResponseData<PlayerSpecificMatchDTO> findBiggestWinByPlayer(String playerId) {
+
+    PlayerSpecificMatchDTO biggestWin = findAllMatchesPlayedByPlayer(playerId)
+        .getObject()
+        .stream()
+        .filter(match -> match.getResult().equals(MatchResult.WIN))
+        .max(Comparator.comparing(PlayerSpecificMatchDTO::getGoalDifference))
+        .orElseThrow(() -> new ValidationException("Player has no wins yet", 204));
+
+    return ResponseData.successful(biggestWin, "Biggest win fetched");
+
+  }
+
+  public ResponseData<PlayerSpecificMatchDTO> findBiggestLossByPlayer(String playerId) {
+
+    PlayerSpecificMatchDTO biggestLoss = findAllMatchesPlayedByPlayer(playerId)
+        .getObject()
+        .stream()
+        .filter(match -> match.getResult().equals(MatchResult.LOSS))
+        .min(Comparator.comparing(PlayerSpecificMatchDTO::getGoalDifference))
+        .orElseThrow(() -> new ValidationException("Player has no losses yet", 204));
+
+    return ResponseData.successful(biggestLoss, "Biggest loss fetched");
   }
 
   /**
