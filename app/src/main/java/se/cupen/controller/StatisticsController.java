@@ -24,6 +24,8 @@ public class StatisticsController {
     this.statisticsService = statisticsService;
   }
 
+  // TODO: Add endpoint /player/{id} that summarizes most of the stats
+
   @GetMapping("/player/{id}/matches")
   public ResponseEntity<ResponseData<List<PlayerSpecificMatchDTO>>> fetchAllPlayersMatches(@PathVariable String id) {
     return ResponseEntity.ok(statisticsService.findAllMatchesPlayedByPlayer(id));
