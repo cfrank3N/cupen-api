@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import se.cupen.dto.MatchDTO;
+import se.cupen.dto.PlayerSpecificMatchDTO;
 import se.cupen.service.StatisticsService;
 import se.cupen.util.ResponseData;
 
@@ -23,7 +23,7 @@ public class StatisticsController {
   }
 
   @GetMapping("/player/{id}/matches")
-  public ResponseEntity<ResponseData<List<MatchDTO>>> fetchAllPlayersMatches(@PathVariable String id) {
+  public ResponseEntity<ResponseData<List<PlayerSpecificMatchDTO>>> fetchAllPlayersMatches(@PathVariable String id) {
     return ResponseEntity.ok(statisticsService.findAllMatchesPlayedByPlayer(id));
   }
 

@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import se.cupen.util.MatchGroup;
+import se.cupen.util.MatchResult;
 import se.cupen.util.MatchType;
 
 @Getter
@@ -16,7 +17,7 @@ import se.cupen.util.MatchType;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MatchDTO {
+public class PlayerSpecificMatchDTO {
 
   private String id;
   private Instant playedAt;
@@ -25,6 +26,7 @@ public class MatchDTO {
   private TeamDTO teamB;
   private List<MatchEventDTO> events;
   private String score;
+  private MatchResult result;
   private MatchType matchType;
   private MatchGroup group;
 

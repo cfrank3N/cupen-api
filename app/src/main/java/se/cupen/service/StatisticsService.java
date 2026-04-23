@@ -1,11 +1,12 @@
 package se.cupen.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import se.cupen.dto.MatchDTO;
+import se.cupen.dto.PlayerSpecificMatchDTO;
 import se.cupen.exception.ValidationException;
 import se.cupen.mapper.MatchMapper;
 import se.cupen.persistence.model.Match;
@@ -34,19 +35,20 @@ public class StatisticsService {
    * @param playerId
    * @return
    */
-  public ResponseData<List<MatchDTO>> findAllMatchesPlayedByPlayer(String playerId) {
+  public ResponseData<List<PlayerSpecificMatchDTO>> findAllMatchesPlayedByPlayer(String playerId) {
 
     Player player = playerRepo.findById(validateIdAndTransformToUuid(playerId))
         .orElseThrow(() -> new ValidationException("Player not found", 404));
 
     List<Team> playersTeams = player.getTeams();
 
-    List<Match> playersMatches = matchRepo.findAll().stream().filter(match -> playersTeams.contains(match.getTeamA())
-        || playersTeams.contains(match.getTeamB())).toList();
+    List<PlayerSpecificMatchDTO> playersMatches = matchRepo.findAll().stream()
+        .filter(match -> playersTeams.contains(match.getTeamA())
+            || playersTeams.contains(match.getTeamB()))
+        .sorted(Comparator.comparing(Match::getPlayedAt).reversed())
+        .map(match -> MatchMapper.toPlayerSpecificDTO(match, playersTeams)).toList();
 
-    List<MatchDTO> matches = playersMatches.stream().map(match -> MatchMapper.toDTO(match)).toList();
-
-    return ResponseData.successful(matches, "Matches fetched");
+    return ResponseData.successful(playersMatches, "Matches fetched");
 
   }
 
