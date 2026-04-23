@@ -59,12 +59,20 @@ public class StatisticsService {
 
   }
 
+  /**
+   * @param playerId
+   * @return
+   */
   public ResponseData<List<PlayerSpecificMatchDTO>> findLatestFivePlayedMatchesByPlayer(String playerId) {
     List<PlayerSpecificMatchDTO> fiveLatestMatches = findAllMatchesPlayedByPlayer(playerId).getObject().stream()
         .limit(5).toList();
     return ResponseData.successful(fiveLatestMatches, "5 Latest matches fetched");
   }
 
+  /**
+   * @param playerId
+   * @return
+   */
   public ResponseData<Long> findPlayersScoredGoals(String playerId) {
 
     Player player = findPlayerById(playerId);
@@ -77,6 +85,10 @@ public class StatisticsService {
 
   }
 
+  /**
+   * @param playerId
+   * @return
+   */
   public ResponseData<List<PlayerSpecificTeamDTO>> findAllTeamsByPlayer(String playerId) {
 
     Player player = findPlayerById(playerId);
@@ -93,6 +105,18 @@ public class StatisticsService {
 
   }
 
+  public ResponseData<List<SimplePlayerStatsDTO>> findCompressedStatsForPlayer(String playerId) {
+
+    List<PlayerSpecificTeamDTO> playerTeamStats = findAllTeamsByPlayer(playerId).getObject();
+
+    // TODO: Add SimplePlayerStatsDTO here.
+  }
+
+  /**
+   * @param team
+   * @param matches
+   * @return
+   */
   private PlayerSpecificTeamDTO buildTeamStats(Team team, List<Match> matches) {
 
     List<Match> teamMatches = matches.stream()
@@ -145,6 +169,10 @@ public class StatisticsService {
 
   }
 
+  /**
+   * @param playerId
+   * @return
+   */
   private Player findPlayerById(String playerId) {
 
     return playerRepo.findById(validateIdAndTransformToUuid(playerId))
@@ -152,6 +180,10 @@ public class StatisticsService {
 
   }
 
+  /**
+   * @param playerId
+   * @return
+   */
   private List<MatchEvent> findPlayersGoals(UUID playerId) {
 
     return matchEventRepo.findAllByPlayerId(playerId)
