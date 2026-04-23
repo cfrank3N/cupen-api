@@ -238,12 +238,14 @@ public class StatisticsService {
     int goalDifference = matchesAgainstOpponent.stream()
         .mapToInt(PlayerSpecificMatchDTO::getGoalDifference)
         .sum();
+    double winPercentage = wonMatches / playedMatches * 100;
 
     return HeadToHeadPlayerStats.builder()
         .playedMatches(playedMatches)
         .playerName(findPlayerById(opponentId.toString()).getName())
         .wonMatches(wonMatches)
         .goalDifference(goalDifference)
+        .winPercentage(winPercentage + "%")
         .build();
 
   }
