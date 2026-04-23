@@ -63,4 +63,10 @@ public class StatisticsController {
     return ResponseEntity.ok(statisticsService.findBiggestLossByPlayer(id));
   }
 
+  @GetMapping("/player/{id}/versus/{idTwo}")
+  public ResponseEntity<ResponseData<List<PlayerSpecificMatchDTO>>> fetchPlayersHeadToHeadMatches(
+      @PathVariable String id, @PathVariable String idTwo) {
+    return ResponseEntity.ok(statisticsService.findHeadToHeadRecords(id, idTwo));
+  }
+
 }

@@ -153,6 +153,28 @@ public class StatisticsService {
     return ResponseData.successful(biggestLoss, "Biggest loss fetched");
   }
 
+  public ResponseData<List<PlayerSpecificMatchDTO>> findHeadToHeadRecords(String playerOneId, String playerTwoId) {
+
+    String playerTwosId = findPlayerById(playerTwoId).getId().toString();
+
+    List<PlayerSpecificMatchDTO> headToHeadGames = findAllMatchesPlayedByPlayer(playerOneId).getObject()
+        .stream()
+        .filter(match -> match
+            .getTeamA()
+            .getPlayers()
+            .stream()
+            .anyMatch(player -> player.getId().equals(playerTwosId))
+            || match
+                .getTeamB()
+                .getPlayers()
+                .stream()
+                .anyMatch(player -> player.getId().equals(playerTwosId)))
+        .toList();
+
+    return ResponseData.successful(headToHeadGames, "Head to head games fetched");
+
+  }
+
   /**
    * @param team
    * @param matches
