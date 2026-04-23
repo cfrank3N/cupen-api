@@ -10,11 +10,13 @@ import se.cupen.dto.PlayerSpecificMatchDTO;
 import se.cupen.exception.ValidationException;
 import se.cupen.mapper.MatchMapper;
 import se.cupen.persistence.model.Match;
+import se.cupen.persistence.model.MatchEvent;
 import se.cupen.persistence.model.Player;
 import se.cupen.persistence.model.Team;
 import se.cupen.persistence.repository.MatchEventRepo;
 import se.cupen.persistence.repository.MatchRepo;
 import se.cupen.persistence.repository.PlayerRepo;
+import se.cupen.util.EventType;
 import se.cupen.util.ResponseData;
 
 @Service
@@ -49,6 +51,26 @@ public class StatisticsService {
         .map(match -> MatchMapper.toPlayerSpecificDTO(match, playersTeams)).toList();
 
     return ResponseData.successful(playersMatches, "Matches fetched");
+
+  }
+
+  public ResponseData<List<PlayerSpecificMatchDTO>> findLatestFivePlayedMatchesByPlayer(String playerId) {
+    List<PlayerSpecificMatchDTO> fiveLatestMatches = findAllMatchesPlayedByPlayer(playerId).getObject().stream()
+        .limit(5).toList();
+    return ResponseData.successful(fiveLatestMatches, "5 Latest matches fetched");
+  }
+
+  public ResponseData<Long> findPlayersScoredGoals(String playerId) {
+
+    Player player = playerRepo.findById(validateIdAndTransformToUuid(playerId))
+        .orElseThrow(() -> new ValidationException("Player not found", 404));
+
+    List<MatchEvent> playersGoals = matchEventRepo.findAllByPlayerId(player.getId())
+        .orElseThrow(() -> new ValidationException("Player has no events registered", 404));
+
+    Long scoredGoals = playersGoals.stream().filter(event -> event.getType().equals(EventType.GOAL)).count();
+
+    return ResponseData.successful(scoredGoals, "Scored goals fetched");
 
   }
 
