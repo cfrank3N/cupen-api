@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import se.cupen.dto.PlayerSpecificMatchDTO;
 import se.cupen.dto.PlayerSpecificTeamDTO;
+import se.cupen.dto.SimplePlayerStatsDTO;
 import se.cupen.exception.ValidationException;
 import se.cupen.mapper.MatchMapper;
 import se.cupen.mapper.PlayerMapper;
@@ -105,11 +106,41 @@ public class StatisticsService {
 
   }
 
-  public ResponseData<List<SimplePlayerStatsDTO>> findCompressedStatsForPlayer(String playerId) {
+  public ResponseData<SimplePlayerStatsDTO> findCompressedStatsForPlayer(String playerId) {
 
     List<PlayerSpecificTeamDTO> playerTeamStats = findAllTeamsByPlayer(playerId).getObject();
 
-    // TODO: Add SimplePlayerStatsDTO here.
+    Player player = findPlayerById(playerId);
+
+    int playedMatches = 0;
+    int scoredGoals = 0;
+    int concededGoals = 0;
+    int wonMatches = 0;
+    int drawnMatches = 0;
+    int lostMatches = 0;
+    int titles = 0;
+
+    for (PlayerSpecificTeamDTO teamStats : playerTeamStats) {
+
+      playedMatches += teamStats.getDraws() + teamStats.getWins() + teamStats.getLosses();
+      scoredGoals += teamStats.getScoredGoals();
+      concededGoals += teamStats.getConcededGoals();
+      wonMatches += teamStats.getWins();
+      drawnMatches += teamStats.getDraws();
+      lostMatches += teamStats.getLosses();
+
+    }
+
+    // TODO: Fix titles
+    SimplePlayerStatsDTO stats = SimplePlayerStatsDTO.builder()
+        .playedMatches(playedMatches)
+        .wonMatches(wonMatches)
+        .drawnMatches(drawnMatches)
+        .lostMatches(lostMatches)
+        .goalDifference(scoredGoals + "-" + concededGoals)
+        .build();
+
+    return ResponseData.successful(stats, "Simple stats fetched");
   }
 
   /**
