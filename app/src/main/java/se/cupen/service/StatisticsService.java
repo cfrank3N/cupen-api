@@ -29,10 +29,13 @@ public class StatisticsService {
     this.playerRepo = playerRepo;
   }
 
+  // TODO: Add non required RequestParams like year, matchType, etc.
+  /**
+   * @param playerId
+   * @return
+   */
   public ResponseData<List<MatchDTO>> findAllMatchesPlayedByPlayer(String playerId) {
 
-    // TODO: Finish this after creating responseobject and exceptionhandler
-    // throw new ValidationException("Not yet implemented", 500);
     Player player = playerRepo.findById(validateIdAndTransformToUuid(playerId))
         .orElseThrow(() -> new ValidationException("Player not found", 404));
 
@@ -47,6 +50,10 @@ public class StatisticsService {
 
   }
 
+  /**
+   * @param id
+   * @return
+   */
   private UUID validateIdAndTransformToUuid(String id) {
     try {
       if (id.length() != 36) {
