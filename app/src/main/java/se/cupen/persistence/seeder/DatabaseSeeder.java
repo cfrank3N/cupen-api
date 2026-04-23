@@ -74,13 +74,30 @@ public class DatabaseSeeder {
                 .pricemoney(2000)
                 .build();
 
+        Player playerE = Player.builder()
+                .city("Nyköping")
+                .name("Samuel Malmqvist")
+                .pricemoney(3000)
+                .build();
+
+        Player playerF = Player.builder()
+                .city("Nyköping")
+                .name("Oscar Glysing")
+                .pricemoney(500)
+                .build();
+
+
+
         List<Player> playersA = new ArrayList<>();
         List<Player> playersB = new ArrayList<>();
+        List<Player> playersC = new ArrayList<>();
 
         playersA.add(playerA);
         playersA.add(playerB);
         playersB.add(playerC);
         playersB.add(playerD);
+        playersC.add(playerE);
+        playersC.add(playerF);
 
         Tournament tournament = Tournament.builder()
                 .year(2026)
@@ -95,6 +112,11 @@ public class DatabaseSeeder {
 
         Team teamB = Team.builder()
                 .players(playersB)
+                .tournament(tournament)
+                .build();
+
+        Team teamC = Team.builder()
+                .players(playersC)
                 .tournament(tournament)
                 .build();
 
@@ -113,6 +135,15 @@ public class DatabaseSeeder {
                 .teamB(teamA)
                 .tournament(tournament)
                 .matchType(MatchType.SEMI_FINAL)
+                .build();
+
+        Match matchThree = Match.builder()
+                .playedAt(Instant.now())
+                .teamA(teamB)
+                .teamB(teamC)
+                .tournament(tournament)
+                .matchGroup(MatchGroup.GROUP_C)
+                .matchType(MatchType.GROUP_STAGE)
                 .build();
 
         MatchEvent eventOne = MatchEvent.builder()
@@ -150,16 +181,39 @@ public class DatabaseSeeder {
                 .type(EventType.GOAL)
                 .build();
 
+        MatchEvent eventSix = MatchEvent.builder()
+                .match(matchThree)
+                .player(playerC)
+                .team(teamB)
+                .type(EventType.GOAL)
+                .build();
+
+        MatchEvent eventSeven = MatchEvent.builder()
+                .match(matchThree)
+                .player(playerC)
+                .team(teamB)
+                .type(EventType.GOAL)
+                .build();
+
+        MatchEvent eventEight = MatchEvent.builder()
+                .match(matchThree)
+                .player(playerD)
+                .team(teamB)
+                .type(EventType.GOAL)
+                .build();
+
         List<MatchEvent> events = List.of(eventOne, eventTwo, eventThree);
         List<MatchEvent> eventsTwo = List.of(eventFour, eventFive);
-        List<MatchEvent> allEvents = List.of(eventOne, eventTwo, eventThree, eventFour, eventFive);
+        List<MatchEvent> eventsThree = List.of(eventSix, eventSeven, eventEight);
+        List<MatchEvent> allEvents = List.of(eventOne, eventTwo, eventThree, eventFour, eventFive, eventSix, eventSeven, eventEight);
 
         matchOne.getEvents().addAll(events);
         matchTwo.getEvents().addAll(eventsTwo);
+        matchThree.getEvents().addAll(eventsThree);
 
-        playerRepo.saveAll(List.of(playerA, playerB, playerC, playerD));
-        teamRepo.saveAll(List.of(teamA, teamB));
-        matchRepo.saveAll(List.of(matchOne, matchTwo));
+        playerRepo.saveAll(List.of(playerA, playerB, playerC, playerD, playerE, playerF));
+        teamRepo.saveAll(List.of(teamA, teamB, teamC));
+        matchRepo.saveAll(List.of(matchOne, matchTwo, matchThree));
         matchEventRepo.saveAll(allEvents);
     }
 }
