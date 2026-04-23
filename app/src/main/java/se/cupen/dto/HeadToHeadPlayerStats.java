@@ -13,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class HeadToHeadPlayerStats {
   private String playerName;
-  private int playedMatches;
-  // TODO: Implement more fields
+  private Integer playedMatches;
+  private Integer wonMatches;
+  private Integer goalDifference;
 }

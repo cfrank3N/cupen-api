@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import se.cupen.dto.HeadToHeadPlayerStats;
 import se.cupen.dto.PlayerSpecificMatchDTO;
 import se.cupen.dto.PlayerSpecificTeamDTO;
 import se.cupen.dto.SimplePlayerStatsDTO;
@@ -67,6 +68,12 @@ public class StatisticsController {
   public ResponseEntity<ResponseData<List<PlayerSpecificMatchDTO>>> fetchPlayersHeadToHeadMatches(
       @PathVariable String id, @PathVariable String idTwo) {
     return ResponseEntity.ok(statisticsService.findHeadToHeadRecords(id, idTwo));
+  }
+
+  @GetMapping("/player/{id}/headtohead")
+  public ResponseEntity<ResponseData<List<HeadToHeadPlayerStats>>> fetchStatsAgainstAllPlayers(
+      @PathVariable String id) {
+    return ResponseEntity.ok(statisticsService.findStatsAgainsAllPlayers(id));
   }
 
 }

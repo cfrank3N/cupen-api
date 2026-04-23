@@ -1,8 +1,11 @@
 package se.cupen.service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -181,7 +184,7 @@ public class StatisticsService {
     // Validate playerTwoId is valid or else throw exception
     findPlayerById(playerTwoId).getId().toString();
 
-    List<PlayerSpecificMatchDTO> headToHeadGames = findAllMatchesPlayedByPlayer(playerOneId).getObject()
+    List<PlayerSpecificMatchDTO> headToHeadMatches = findAllMatchesPlayedByPlayer(playerOneId).getObject()
         .stream()
         .filter(match -> {
           boolean playerOneIsTeamA = match.getTeamA().getPlayers().stream()
@@ -196,14 +199,53 @@ public class StatisticsService {
         })
         .toList();
 
-    return ResponseData.successful(headToHeadGames, "Head to head games fetched");
+    return ResponseData.successful(headToHeadMatches, "Head to head games fetched");
 
   }
 
   public ResponseData<List<HeadToHeadPlayerStats>> findStatsAgainsAllPlayers(String playerId) {
 
-    // TODO: Implement this method
-    throw new ValidationException("Not yet implemented", 204);
+    findPlayerById(playerId);
+
+    List<Player> allPlayers = playerRepo.findAll().stream()
+        .filter(player -> !player.getId().toString().equals(playerId))
+        .toList();
+
+    Map<UUID, List<PlayerSpecificMatchDTO>> allStats = allPlayers.stream()
+        .collect(Collectors.toMap(
+            Player::getId,
+            player -> findHeadToHeadRecords(playerId, player.getId().toString()).getObject()))
+        .entrySet().stream()
+        .filter(entry -> !entry.getValue().isEmpty())
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    List<HeadToHeadPlayerStats> summarizedStats = allStats.entrySet().stream()
+        .map(entry -> summarizeStatsPerOpponent(entry.getKey(), entry.getValue()))
+        .sorted(Comparator.comparing(HeadToHeadPlayerStats::getWonMatches))
+        .toList();
+
+    return ResponseData.successful(summarizedStats, "Stats fetched");
+
+  }
+
+  private HeadToHeadPlayerStats summarizeStatsPerOpponent(UUID opponentId,
+      List<PlayerSpecificMatchDTO> matchesAgainstOpponent) {
+
+    int playedMatches = matchesAgainstOpponent.size();
+    int wonMatches = (int) matchesAgainstOpponent.stream()
+        .filter(match -> match.getResult().equals(MatchResult.WIN))
+        .count();
+    int goalDifference = matchesAgainstOpponent.stream()
+        .mapToInt(PlayerSpecificMatchDTO::getGoalDifference)
+        .sum();
+
+    return HeadToHeadPlayerStats.builder()
+        .playedMatches(playedMatches)
+        .playerName(findPlayerById(opponentId.toString()).getName())
+        .wonMatches(wonMatches)
+        .goalDifference(goalDifference)
+        .build();
+
   }
 
   /**
