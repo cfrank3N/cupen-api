@@ -110,26 +110,13 @@ public class StatisticsService {
 
     List<PlayerSpecificTeamDTO> playerTeamStats = findAllTeamsByPlayer(playerId).getObject();
 
-    Player player = findPlayerById(playerId);
-
-    int playedMatches = 0;
-    int scoredGoals = 0;
-    int concededGoals = 0;
-    int wonMatches = 0;
-    int drawnMatches = 0;
-    int lostMatches = 0;
-    int titles = 0;
-
-    for (PlayerSpecificTeamDTO teamStats : playerTeamStats) {
-
-      playedMatches += teamStats.getDraws() + teamStats.getWins() + teamStats.getLosses();
-      scoredGoals += teamStats.getScoredGoals();
-      concededGoals += teamStats.getConcededGoals();
-      wonMatches += teamStats.getWins();
-      drawnMatches += teamStats.getDraws();
-      lostMatches += teamStats.getLosses();
-
-    }
+    int playedMatches = playerTeamStats.stream()
+        .mapToInt(stats -> stats.getLosses() + stats.getWins() + stats.getDraws()).sum();
+    int scoredGoals = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getScoredGoals).sum();
+    int concededGoals = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getConcededGoals).sum();
+    int wonMatches = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getWins).sum();
+    int drawnMatches = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getDraws).sum();
+    int lostMatches = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getLosses).sum();
 
     // TODO: Fix titles
     SimplePlayerStatsDTO stats = SimplePlayerStatsDTO.builder()
