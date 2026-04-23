@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import se.cupen.dto.PlayerDTO;
 import se.cupen.dto.PlayerSpecificMatchDTO;
 import se.cupen.dto.PlayerSpecificTeamDTO;
 import se.cupen.dto.SimplePlayerStatsDTO;
@@ -155,20 +156,26 @@ public class StatisticsService {
 
   public ResponseData<List<PlayerSpecificMatchDTO>> findHeadToHeadRecords(String playerOneId, String playerTwoId) {
 
-    String playerTwosId = findPlayerById(playerTwoId).getId().toString();
+    if (playerOneId.equals(playerTwoId)) {
+      throw new ValidationException("Players can't be the same player", 400);
+    }
+
+    // Validate playerTwoId is valid or else throw exception
+    findPlayerById(playerTwoId).getId().toString();
 
     List<PlayerSpecificMatchDTO> headToHeadGames = findAllMatchesPlayedByPlayer(playerOneId).getObject()
         .stream()
-        .filter(match -> match
-            .getTeamA()
-            .getPlayers()
-            .stream()
-            .anyMatch(player -> player.getId().equals(playerTwosId))
-            || match
-                .getTeamB()
-                .getPlayers()
-                .stream()
-                .anyMatch(player -> player.getId().equals(playerTwosId)))
+        .filter(match -> {
+          boolean playerOneIsTeamA = match.getTeamA().getPlayers().stream()
+              .anyMatch(player -> player.getId().equals(playerOneId));
+
+          List<PlayerDTO> opposingTeamPlayers = playerOneIsTeamA
+              ? match.getTeamB().getPlayers()
+              : match.getTeamA().getPlayers();
+
+          return opposingTeamPlayers.stream()
+              .anyMatch(player -> player.getId().equals(playerTwoId));
+        })
         .toList();
 
     return ResponseData.successful(headToHeadGames, "Head to head games fetched");
