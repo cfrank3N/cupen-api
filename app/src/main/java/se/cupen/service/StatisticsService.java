@@ -105,6 +105,10 @@ public class StatisticsService {
 
   }
 
+  /**
+   * @param playerId
+   * @return
+   */
   public ResponseData<SimplePlayerStatsDTO> findCompressedStatsForPlayer(String playerId) {
 
     List<PlayerSpecificTeamDTO> playerTeamStats = findAllTeamsByPlayer(playerId).getObject();
@@ -129,6 +133,10 @@ public class StatisticsService {
     return ResponseData.successful(stats, "Simple stats fetched");
   }
 
+  /**
+   * @param playerId
+   * @return
+   */
   public ResponseData<PlayerSpecificMatchDTO> findBiggestWinByPlayer(String playerId) {
 
     PlayerSpecificMatchDTO biggestWin = findAllMatchesPlayedByPlayer(playerId)
@@ -142,6 +150,10 @@ public class StatisticsService {
 
   }
 
+  /**
+   * @param playerId
+   * @return
+   */
   public ResponseData<PlayerSpecificMatchDTO> findBiggestLossByPlayer(String playerId) {
 
     PlayerSpecificMatchDTO biggestLoss = findAllMatchesPlayedByPlayer(playerId)
@@ -154,6 +166,11 @@ public class StatisticsService {
     return ResponseData.successful(biggestLoss, "Biggest loss fetched");
   }
 
+  /**
+   * @param playerOneId
+   * @param playerTwoId
+   * @return
+   */
   public ResponseData<List<PlayerSpecificMatchDTO>> findHeadToHeadRecords(String playerOneId, String playerTwoId) {
 
     if (playerOneId.equals(playerTwoId)) {
