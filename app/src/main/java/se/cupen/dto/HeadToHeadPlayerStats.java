@@ -15,6 +15,6 @@ public class HeadToHeadPlayerStats {
   private String playerName;
   private Integer playedMatches;
   private Integer wonMatches;
-  private String winPercentage;
+  private Double winPercentage;
   private Integer goalDifference;
 }

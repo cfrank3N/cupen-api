@@ -221,7 +221,7 @@ public class StatisticsService {
 
     List<HeadToHeadPlayerStats> summarizedStats = allStats.entrySet().stream()
         .map(entry -> summarizeStatsPerOpponent(entry.getKey(), entry.getValue()))
-        .sorted(Comparator.comparing(HeadToHeadPlayerStats::getWonMatches))
+        .sorted(Comparator.comparing(HeadToHeadPlayerStats::getWinPercentage))
         .toList();
 
     return ResponseData.successful(summarizedStats, "Stats fetched");
@@ -238,14 +238,14 @@ public class StatisticsService {
     int goalDifference = matchesAgainstOpponent.stream()
         .mapToInt(PlayerSpecificMatchDTO::getGoalDifference)
         .sum();
-    double winPercentage = wonMatches / playedMatches * 100;
+    double winPercentage = (double) wonMatches / playedMatches * 100;
 
     return HeadToHeadPlayerStats.builder()
         .playedMatches(playedMatches)
         .playerName(findPlayerById(opponentId.toString()).getName())
         .wonMatches(wonMatches)
         .goalDifference(goalDifference)
-        .winPercentage(winPercentage + "%")
+        .winPercentage(winPercentage)
         .build();
 
   }
