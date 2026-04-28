@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
@@ -13,11 +14,13 @@ import se.cupen.persistence.model.MatchEvent;
 import se.cupen.persistence.model.Player;
 import se.cupen.persistence.model.Team;
 import se.cupen.persistence.model.Tournament;
+import se.cupen.persistence.model.User;
 import se.cupen.persistence.repository.MatchEventRepo;
 import se.cupen.persistence.repository.MatchRepo;
 import se.cupen.persistence.repository.PlayerRepo;
 import se.cupen.persistence.repository.TeamRepo;
 import se.cupen.persistence.repository.TournamentRepo;
+import se.cupen.persistence.repository.UserRepo;
 import se.cupen.util.EventType;
 import se.cupen.util.MatchGroup;
 import se.cupen.util.MatchType;
@@ -31,24 +34,34 @@ public class DatabaseSeeder {
     private final PlayerRepo playerRepo;
     private final TeamRepo teamRepo;
     private final MatchEventRepo matchEventRepo;
+    private final UserRepo userRepo;
 
     public DatabaseSeeder(
             TournamentRepo tournamentRepo,
             MatchRepo matchRepo,
             MatchEventRepo matchEventRepo,
             PlayerRepo playerRepo,
-            TeamRepo teamRepo) {
+            TeamRepo teamRepo,
+            UserRepo userRepo) {
 
         this.matchEventRepo = matchEventRepo;
         this.matchRepo = matchRepo;
         this.playerRepo = playerRepo;
         this.teamRepo = teamRepo;
         this.tournamentRepo = tournamentRepo;
+        this.userRepo = userRepo;
 
     }
 
     @PostConstruct
     public void seed() {
+
+        User admin = User.builder()
+                .username("frank")
+                .password(BCrypt.hashpw("hej123", BCrypt.gensalt()))
+                .build();
+
+        userRepo.save(admin);
 
         Player playerA = Player.builder()
                 .city("Nyköping")
