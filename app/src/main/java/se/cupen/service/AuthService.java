@@ -27,16 +27,16 @@ public class AuthService {
   }
 
   @Transactional(readOnly = true)
-  public ResponseData<TokenPair> newLogin(UserLogin credentials) {
+  public ResponseData<TokenPair> login(UserLogin credentials) {
 
     logger.info("{} trying to log in!", credentials.getEmail());
 
     User user = findUserAndValidatePassword(credentials);
 
     // 3 minutes
-    String jwtToken = jwtService.generateToken(user, role, jwtExpirationDate());
+    String jwtToken = jwtService.generateToken(user, jwtExpirationDate());
     // 7 hours
-    String refreshTokenAsString = jwtService.generateToken(user, role, refreshTokenExpirationDate());
+    String refreshTokenAsString = jwtService.generateToken(user, refreshTokenExpirationDate());
 
     ResponseCookie refreshToken = ResponseCookie
         .from("refreshToken", refreshTokenAsString)
@@ -77,6 +77,21 @@ public class AuthService {
     String jwtToken = jwtService.generateToken(user, jwtExpirationDate());
 
     return ResponseData.successful(jwtToken, "Tokens generated");
+  }
+
+  private User findUserAndValidatePassword(UserLogin credentials) throws ValidationException {
+
+    // Find user
+    User user = userRepo.findByEmail(credentials.getEmail())
+        .orElseThrow(() -> new ValidationException(LOGIN_FAILURE, HttpStatus.UNAUTHORIZED.value()));
+
+    // Check if passwords don't match to see if the client typed in the correct one
+    if (!BCrypt.checkpw(credentials.getPassword(), user.getPassword())) {
+      throw new ValidationException(LOGIN_FAILURE, HttpStatus.UNAUTHORIZED.value());
+    }
+
+    return user;
+
   }
 
   private User findUserByUsername(String username) {
