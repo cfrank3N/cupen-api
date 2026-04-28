@@ -71,7 +71,7 @@ public class JwtFilter extends OncePerRequestFilter {
       // expired jwt token
       // via /api/refresh. This is to keep the flow simple and let the controller do
       // as little as possible
-      if (token == null && uri.equals("/api/refresh")) {
+      if (token == null && uri.equals("/auth/refresh")) {
 
         logger.info("Authenticating refresh token");
 
@@ -95,7 +95,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (jwtService.validateToken(token, username)) {
           // find role from Jwt to insert into authToken
-          SimpleGrantedAuthority authority = new SimpleGrantedAuthority(Role.ADMIN.toString());
+          SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + Role.ADMIN.toString());
 
           UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
               username,

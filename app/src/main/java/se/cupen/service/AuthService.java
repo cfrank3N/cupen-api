@@ -46,7 +46,7 @@ public class AuthService {
         .httpOnly(true)
         .secure(true)
         .sameSite("Lax")
-        .path("/api/refresh")
+        .path("/auth/refresh")
         .maxAge(604800L) // 7 days
         .build();
 
