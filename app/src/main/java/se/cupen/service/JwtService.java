@@ -12,6 +12,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import se.cupen.persistence.model.User;
 
 @Service
 public class JwtService {
@@ -26,8 +27,6 @@ public class JwtService {
 
     return Jwts.builder()
         .setSubject(user.getUsername())
-        .claim("email", user.getEmail())
-        .claim("name", user.getForename() + " " + user.getSurname())
         .setIssuedAt(new Date())
         .setExpiration(expiration)
         .signWith(getSecretKey(), SignatureAlgorithm.HS256)
@@ -38,14 +37,6 @@ public class JwtService {
   public Key getSecretKey() {
     byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
     return Keys.hmacShaKeyFor(keyBytes);
-  }
-
-  public String extractRole(String token) {
-    return extractClaim(token, claims -> claims.get("role", String.class));
-  }
-
-  public String extractOrgId(String token) {
-    return extractClaim(token, claims -> claims.get("orgId", String.class));
   }
 
   public String extractUsername(String token) {
