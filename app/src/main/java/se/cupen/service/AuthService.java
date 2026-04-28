@@ -7,9 +7,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import se.cupen.dto.TokenPair;
+import se.cupen.dto.UserLogin;
 import se.cupen.exception.ValidationException;
 import se.cupen.persistence.model.User;
 import se.cupen.persistence.repository.UserRepo;
@@ -29,7 +32,7 @@ public class AuthService {
   @Transactional(readOnly = true)
   public ResponseData<TokenPair> login(UserLogin credentials) {
 
-    logger.info("{} trying to log in!", credentials.getEmail());
+    logger.info("{} trying to log in!", credentials.getUsername());
 
     User user = findUserAndValidatePassword(credentials);
 
@@ -52,7 +55,7 @@ public class AuthService {
         .refreshToken(refreshToken)
         .build();
 
-    logger.info("{} logged in!", credentials.getEmail());
+    logger.info("{} logged in!", credentials.getUsername());
     return ResponseData.successful(tokenPair, "Tokens generated");
   }
 
@@ -82,12 +85,12 @@ public class AuthService {
   private User findUserAndValidatePassword(UserLogin credentials) throws ValidationException {
 
     // Find user
-    User user = userRepo.findByEmail(credentials.getEmail())
-        .orElseThrow(() -> new ValidationException(LOGIN_FAILURE, HttpStatus.UNAUTHORIZED.value()));
+    User user = userRepo.findByUsername(credentials.getUsername())
+        .orElseThrow(() -> new ValidationException("Login failed", HttpStatus.UNAUTHORIZED.value()));
 
     // Check if passwords don't match to see if the client typed in the correct one
     if (!BCrypt.checkpw(credentials.getPassword(), user.getPassword())) {
-      throw new ValidationException(LOGIN_FAILURE, HttpStatus.UNAUTHORIZED.value());
+      throw new ValidationException("Login failed", HttpStatus.UNAUTHORIZED.value());
     }
 
     return user;
