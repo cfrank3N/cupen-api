@@ -37,7 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
   private final ObjectMapper objectMapper;
   private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 
-  public JwtFilter(String[] permittedPaths, JwtService jwtService, UserService userService,
+  public JwtFilter(JwtService jwtService, UserService userService,
       com.fasterxml.jackson.databind.ObjectMapper objectMapper,
       String[] authenticatedPaths) {
     this.jwtService = jwtService;

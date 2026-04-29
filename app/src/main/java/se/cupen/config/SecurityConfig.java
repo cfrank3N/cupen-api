@@ -33,7 +33,7 @@ public class SecurityConfig {
 
   @Bean
   public JwtFilter jwtFilter() {
-    return new JwtFilter(AUTHENTICATED_PATHS, jwtService, userService, objectMapper, AUTHENTICATED_PATHS);
+    return new JwtFilter(jwtService, userService, objectMapper, AUTHENTICATED_PATHS);
   }
 
   @Bean
