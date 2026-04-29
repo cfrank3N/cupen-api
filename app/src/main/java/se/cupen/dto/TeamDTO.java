@@ -17,5 +17,6 @@ public class TeamDTO {
 
   private String id;
   private List<PlayerDTO> players;
+  // TODO: Maybe add Tournament year here instead of in matchDTO
 
 }
