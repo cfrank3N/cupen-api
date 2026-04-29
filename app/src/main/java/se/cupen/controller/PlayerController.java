@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpStatus;
+
 import se.cupen.dto.PlayerDTO;
 import se.cupen.dto.creation.CreatePlayer;
 import se.cupen.service.PlayerService;
@@ -32,6 +34,6 @@ public class PlayerController {
   @PostMapping("/players")
   public ResponseEntity<ResponseData<List<PlayerDTO>>> insertPlayers(@RequestBody List<CreatePlayer> players) {
     ResponseData<List<PlayerDTO>> response = playerService.insertPlayers(players);
-    return ResponseEntity.status(response.getStatus()).body(response);
+    return ResponseEntity.status(HttpStatus.SC_CREATED).body(response);
   }
 }
