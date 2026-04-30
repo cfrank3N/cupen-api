@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpStatus;
 
 import se.cupen.dto.MatchDTO;
+import se.cupen.dto.MatchEventDTO;
 import se.cupen.dto.creation.CreateMatch;
+import se.cupen.dto.creation.CreateMatchEvent;
 import se.cupen.service.MatchService;
 import se.cupen.util.ResponseData;
 
@@ -35,6 +37,13 @@ public class MatchController {
   @PostMapping("/matches")
   public ResponseEntity<ResponseData<List<MatchDTO>>> createMatches(@RequestBody List<CreateMatch> matches) {
     ResponseData<List<MatchDTO>> response = matchService.createMatches(matches);
+    return ResponseEntity.status(HttpStatus.SC_CREATED).body(response);
+  }
+
+  @PostMapping("/matches/events")
+  public ResponseEntity<ResponseData<List<MatchEventDTO>>> createMatchEvents(
+      @RequestBody List<CreateMatchEvent> events) {
+    ResponseData<List<MatchEventDTO>> response = matchService.createMatchEvents(events);
     return ResponseEntity.status(HttpStatus.SC_CREATED).body(response);
   }
 }
