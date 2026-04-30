@@ -28,6 +28,9 @@ import se.cupen.persistence.repository.MatchEventRepo;
 import se.cupen.persistence.repository.MatchRepo;
 import se.cupen.persistence.repository.PlayerRepo;
 import se.cupen.persistence.repository.TeamRepo;
+import se.cupen.util.EventType;
+import se.cupen.util.MatchGroup;
+import se.cupen.util.MatchType;
 import se.cupen.util.ResponseData;
 
 @Service
@@ -140,6 +143,18 @@ public class MatchService {
     List<MatchDTO> savedMatches = matchRepo.saveAll(matchesToSave).stream().map(MatchMapper::toDTO).toList();
 
     return ResponseData.successful(savedMatches, "Matches saved");
+  }
+
+  public ResponseData<MatchType[]> findAllMatchTypes() {
+    return ResponseData.successful(MatchType.values(), "MatchTypes fetched");
+  }
+
+  public ResponseData<EventType[]> findAllEventTypes() {
+    return ResponseData.successful(EventType.values(), "EventTypes fetched");
+  }
+
+  public ResponseData<MatchGroup[]> findAllMatchGroups() {
+    return ResponseData.successful(MatchGroup.values(), "MatchGroups fetched");
   }
 
   /**

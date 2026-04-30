@@ -17,6 +17,9 @@ import se.cupen.dto.MatchEventDTO;
 import se.cupen.dto.creation.CreateMatch;
 import se.cupen.dto.creation.CreateMatchEvent;
 import se.cupen.service.MatchService;
+import se.cupen.util.EventType;
+import se.cupen.util.MatchGroup;
+import se.cupen.util.MatchType;
 import se.cupen.util.ResponseData;
 
 @RestController
@@ -45,5 +48,20 @@ public class MatchController {
       @RequestBody List<CreateMatchEvent> events) {
     ResponseData<List<MatchEventDTO>> response = matchService.createMatchEvents(events);
     return ResponseEntity.status(HttpStatus.SC_CREATED).body(response);
+  }
+
+  @GetMapping("/matches/events/types")
+  public ResponseEntity<ResponseData<EventType[]>> fetchAllEventTypes() {
+    return ResponseEntity.ok(matchService.findAllEventTypes());
+  }
+
+  @GetMapping("/matches/types")
+  public ResponseEntity<ResponseData<MatchType[]>> fetchAllMatchTypes() {
+    return ResponseEntity.ok(matchService.findAllMatchTypes());
+  }
+
+  @GetMapping("/matches/groups")
+  public ResponseEntity<ResponseData<MatchGroup[]>> fetchAllMatchGroups() {
+    return ResponseEntity.ok(matchService.findAllMatchGroups());
   }
 }
