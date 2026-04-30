@@ -178,37 +178,6 @@ public class MatchService {
   }
 
   /**
-   * @param playerId
-   * @return
-   */
-  private Team findTeamById(String teamId) {
-
-    return teamRepo.findById(validateIdAndTransformToUuid(teamId))
-        .orElseThrow(() -> new ValidationException("Team not found", 404));
-
-  }
-
-  /**
-   * @param playerId
-   * @return
-   */
-  private Player findPlayerById(String playerId) {
-
-    return playerRepo.findById(validateIdAndTransformToUuid(playerId))
-        .orElseThrow(() -> new ValidationException("Player not found", 404));
-
-  }
-
-  /**
-   * @param matchId
-   * @return
-   */
-  private Match findMatchById(String matchId) {
-    return matchRepo.findById(validateIdAndTransformToUuid(matchId))
-        .orElseThrow(() -> new ValidationException("Match not found", 404));
-  }
-
-  /**
    * @param match
    * @return
    */
