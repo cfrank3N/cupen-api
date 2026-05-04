@@ -20,8 +20,9 @@ public class PlayerService {
     this.playerRepo = playerRepo;
   }
 
-  public List<PlayerDTO> findAllPlayers() {
-    return playerRepo.findAll().stream().map(player -> PlayerMapper.toDTO(player)).toList();
+  public ResponseData<List<PlayerDTO>> findAllPlayers() {
+    List<PlayerDTO> players = playerRepo.findAll().stream().map(player -> PlayerMapper.toDTO(player)).toList();
+    return ResponseData.successful(players, "All players fetched");
   }
 
   public ResponseData<List<PlayerDTO>> insertPlayers(List<CreatePlayer> players) {

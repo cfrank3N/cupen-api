@@ -30,6 +30,11 @@ public class TeamService {
     this.tournamentRepo = tournamentRepo;
   }
 
+  public ResponseData<List<TeamDTO>> findAllTeams() {
+    List<TeamDTO> teams = teamRepo.findAll().stream().map(TeamMapper::toDTO).toList();
+    return ResponseData.successful(teams, "All teams fetched");
+  }
+
   public ResponseData<List<TeamDTO>> createTeams(List<CreateTeam> teams, String tournamentId) {
 
     Tournament tournament = findTournamentById(tournamentId);

@@ -27,7 +27,7 @@ public class PlayerController {
   }
 
   @GetMapping("/players")
-  public ResponseEntity<List<PlayerDTO>> fetchAllPlayers() {
+  public ResponseEntity<ResponseData<List<PlayerDTO>>> fetchAllPlayers() {
     return ResponseEntity.ok(playerService.findAllPlayers());
   }
 
