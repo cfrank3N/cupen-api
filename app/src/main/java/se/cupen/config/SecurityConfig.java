@@ -25,11 +25,14 @@ public class SecurityConfig {
   private final JwtService jwtService;
   private final UserService userService;
   private final ObjectMapper objectMapper;
+  private final CorsConfigurationSource corsConfigurationSource;
 
-  public SecurityConfig(JwtService jwtService, UserService userService, ObjectMapper objectMapper) {
+  public SecurityConfig(JwtService jwtService, UserService userService, ObjectMapper objectMapper,
+      CorsConfigurationSource corsConfigurationSource) {
     this.jwtService = jwtService;
     this.userService = userService;
     this.objectMapper = objectMapper;
+    this.corsConfigurationSource = corsConfigurationSource;
   }
 
   @Bean
@@ -41,7 +44,7 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .csrf(csrf -> csrf.disable())
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .cors(cors -> cors.configurationSource(corsConfigurationSource))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(AUTHENTICATED_PATHS).authenticated()
             .anyRequest().permitAll())
