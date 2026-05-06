@@ -44,8 +44,8 @@ public class AuthService {
     ResponseCookie refreshToken = ResponseCookie
         .from("refreshToken", refreshTokenAsString)
         .httpOnly(true)
-        .secure(true)
-        .sameSite("Lax")
+        .secure(false)
+        .sameSite("None")
         .path("/auth/refresh")
         .maxAge(604800L) // 7 days
         .build();

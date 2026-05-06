@@ -48,10 +48,12 @@ public class MatchService {
     this.playerRepo = playerRepo;
   }
 
-  public List<MatchDTO> findAllMatches() {
-    return matchRepo.findAll().stream()
+  public ResponseData<List<MatchDTO>> findAllMatches() {
+    List<MatchDTO> matches = matchRepo.findAll().stream()
         .sorted(Comparator.comparing(Match::getPlayedAt).reversed())
         .map(match -> MatchMapper.toDTO(match)).toList();
+
+    return ResponseData.successful(matches, "Matches fetched");
   }
 
   public ResponseData<List<MatchEventDTO>> createMatchEvents(List<CreateMatchEvent> events) {

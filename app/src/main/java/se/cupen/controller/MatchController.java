@@ -32,7 +32,7 @@ public class MatchController {
   }
 
   @GetMapping("/matches")
-  public ResponseEntity<List<MatchDTO>> fetchAllMatches() {
+  public ResponseEntity<ResponseData<List<MatchDTO>>> fetchAllMatches() {
     return ResponseEntity.ok(matchService.findAllMatches());
   }
 
