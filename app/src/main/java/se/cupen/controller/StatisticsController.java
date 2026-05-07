@@ -12,6 +12,7 @@ import se.cupen.dto.GoalsScoredByPlayer;
 import se.cupen.dto.HeadToHeadPlayerStats;
 import se.cupen.dto.PlayerSpecificMatchDTO;
 import se.cupen.dto.PlayerSpecificTeamDTO;
+import se.cupen.dto.PlayerViewStats;
 import se.cupen.dto.SimplePlayerStatsDTO;
 import se.cupen.service.StatisticsService;
 import se.cupen.util.ResponseData;
@@ -27,6 +28,11 @@ public class StatisticsController {
   }
 
   // TODO: Add endpoint /player/{id} that summarizes most of the stats
+
+  @GetMapping("player/{id}")
+  public ResponseEntity<ResponseData<PlayerViewStats>> fetchPlayerStats(@PathVariable String id) {
+    return ResponseEntity.ok(statisticsService.playerStats(id));
+  }
 
   @GetMapping("/player/{id}/matches")
   public ResponseEntity<ResponseData<List<PlayerSpecificMatchDTO>>> fetchAllPlayersMatches(@PathVariable String id) {
@@ -52,7 +58,7 @@ public class StatisticsController {
 
   @GetMapping("/player/{id}/simplestats")
   public ResponseEntity<ResponseData<SimplePlayerStatsDTO>> fetchSimplePlayerStats(@PathVariable String id) {
-    return ResponseEntity.ok(statisticsService.findCompressedStatsForPlayer(id));
+    return ResponseEntity.ok(statisticsService.compressedStatsForPlayer(id));
   }
 
   @GetMapping("/player/{id}/biggestwin")

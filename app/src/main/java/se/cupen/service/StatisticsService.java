@@ -13,6 +13,7 @@ import se.cupen.dto.HeadToHeadPlayerStats;
 import se.cupen.dto.PlayerDTO;
 import se.cupen.dto.PlayerSpecificMatchDTO;
 import se.cupen.dto.PlayerSpecificTeamDTO;
+import se.cupen.dto.PlayerViewStats;
 import se.cupen.dto.SimplePlayerStatsDTO;
 import se.cupen.exception.ValidationException;
 import se.cupen.mapper.MatchMapper;
@@ -50,6 +51,19 @@ public class StatisticsService {
 
         Player player = findPlayerById(playerId);
         return findAllMatchesPlayedByPlayer(player);
+
+    }
+
+    public ResponseData<PlayerViewStats> playerStats(String playerId) {
+        Player player = findPlayerById(playerId);
+        List<PlayerSpecificMatchDTO> lastFiveMatches = findAllMatchesPlayedByPlayer(player).getObject().stream()
+                .limit(5).toList();
+        List<PlayerSpecificTeamDTO> teams = findAllTeamsByPlayer(player);
+        SimplePlayerStatsDTO stats = findCompressedStatsForPlayer(player);
+
+        PlayerViewStats playerStats = new PlayerViewStats(lastFiveMatches, teams, stats);
+
+        return ResponseData.successful(playerStats, "Player stats fetched");
 
     }
 
@@ -126,9 +140,16 @@ public class StatisticsService {
      * @param playerId
      * @return
      */
-    public ResponseData<SimplePlayerStatsDTO> findCompressedStatsForPlayer(String playerId) {
+    public ResponseData<SimplePlayerStatsDTO> compressedStatsForPlayer(String playerId) {
 
         Player player = findPlayerById(playerId);
+
+        SimplePlayerStatsDTO stats = findCompressedStatsForPlayer(player);
+
+        return ResponseData.successful(stats, "Simple stats fetched");
+    }
+
+    private SimplePlayerStatsDTO findCompressedStatsForPlayer(Player player) {
 
         List<PlayerSpecificTeamDTO> playerTeamStats = findAllTeamsByPlayer(player);
 
@@ -141,7 +162,7 @@ public class StatisticsService {
         int lostMatches = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getLosses).sum();
 
         // TODO: Fix titles
-        SimplePlayerStatsDTO stats = SimplePlayerStatsDTO.builder()
+        return SimplePlayerStatsDTO.builder()
                 .playedMatches(playedMatches)
                 .wonMatches(wonMatches)
                 .drawnMatches(drawnMatches)
@@ -149,7 +170,6 @@ public class StatisticsService {
                 .goalDifference(scoredGoals + "-" + concededGoals)
                 .build();
 
-        return ResponseData.successful(stats, "Simple stats fetched");
     }
 
     /**
