@@ -63,12 +63,12 @@ public class StatisticsController {
 
   @GetMapping("/player/{id}/biggestwin")
   public ResponseEntity<ResponseData<PlayerSpecificMatchDTO>> fetchBiggestWinByPlayer(@PathVariable String id) {
-    return ResponseEntity.ok(statisticsService.findBiggestWinByPlayer(id));
+    return ResponseEntity.ok(statisticsService.biggestWinByPlayer(id));
   }
 
   @GetMapping("/player/{id}/biggestloss")
   public ResponseEntity<ResponseData<PlayerSpecificMatchDTO>> fetchBiggestLossByPlayer(@PathVariable String id) {
-    return ResponseEntity.ok(statisticsService.findBiggestLossByPlayer(id));
+    return ResponseEntity.ok(statisticsService.biggestLossByPlayer(id));
   }
 
   @GetMapping("/player/{id}/versus/{idTwo}")

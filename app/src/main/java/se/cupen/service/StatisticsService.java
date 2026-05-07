@@ -60,12 +60,18 @@ public class StatisticsService {
                 .limit(5).toList();
         List<PlayerSpecificTeamDTO> teams = findAllTeamsByPlayer(player);
         SimplePlayerStatsDTO stats = findCompressedStatsForPlayer(player);
+        List<HeadToHeadPlayerStats> headTohead = findStatsAgainsAllPlayers(player.getId().toString()).getObject();
+        PlayerSpecificMatchDTO biggestWin = findBiggestWinByPlayer(player);
+        PlayerSpecificMatchDTO biggestLoss = findBiggestLossByPlayer(player);
 
         PlayerViewStats playerStats = PlayerViewStats.builder()
                 .name(player.getName())
                 .lastFiveMatches(lastFiveMatches)
                 .formerTeams(teams)
                 .stats(stats)
+                .headToHead(headTohead)
+                .biggestWin(biggestWin)
+                .biggestLoss(biggestLoss)
                 .build();
 
         return ResponseData.successful(playerStats, "Player stats fetched");
@@ -181,7 +187,7 @@ public class StatisticsService {
      * @param playerId
      * @return
      */
-    public ResponseData<PlayerSpecificMatchDTO> findBiggestWinByPlayer(String playerId) {
+    public ResponseData<PlayerSpecificMatchDTO> biggestWinByPlayer(String playerId) {
 
         PlayerSpecificMatchDTO biggestWin = matchesPlayedByPlayer(playerId)
                 .getObject()
@@ -191,14 +197,31 @@ public class StatisticsService {
                 .orElseThrow(() -> new ValidationException("Player has no wins yet", 204));
 
         return ResponseData.successful(biggestWin, "Biggest win fetched");
+    }
 
+    public PlayerSpecificMatchDTO findBiggestWinByPlayer(Player player) {
+        PlayerSpecificMatchDTO biggestWin = findAllMatchesPlayedByPlayer(player).getObject().stream()
+                .filter(match -> match.getResult().equals(MatchResult.WIN))
+                .max(Comparator.comparing(PlayerSpecificMatchDTO::getGoalDifference))
+                .orElse(new PlayerSpecificMatchDTO());
+
+        return biggestWin;
+    }
+
+    public PlayerSpecificMatchDTO findBiggestLossByPlayer(Player player) {
+        PlayerSpecificMatchDTO biggestLoss = findAllMatchesPlayedByPlayer(player).getObject().stream()
+                .filter(match -> match.getResult().equals(MatchResult.LOSS))
+                .max(Comparator.comparing(PlayerSpecificMatchDTO::getGoalDifference))
+                .orElse(new PlayerSpecificMatchDTO());
+
+        return biggestLoss;
     }
 
     /**
      * @param playerId
      * @return
      */
-    public ResponseData<PlayerSpecificMatchDTO> findBiggestLossByPlayer(String playerId) {
+    public ResponseData<PlayerSpecificMatchDTO> biggestLossByPlayer(String playerId) {
 
         PlayerSpecificMatchDTO biggestLoss = matchesPlayedByPlayer(playerId)
                 .getObject()

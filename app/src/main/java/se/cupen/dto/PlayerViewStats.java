@@ -18,4 +18,7 @@ public class PlayerViewStats {
   private List<PlayerSpecificMatchDTO> lastFiveMatches;
   private List<PlayerSpecificTeamDTO> formerTeams;
   private SimplePlayerStatsDTO stats;
+  private List<HeadToHeadPlayerStats> headToHead;
+  private PlayerSpecificMatchDTO biggestWin;
+  private PlayerSpecificMatchDTO biggestLoss;
 }
