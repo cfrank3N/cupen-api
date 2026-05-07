@@ -30,18 +30,18 @@ public class StatisticsController {
 
   @GetMapping("/player/{id}/matches")
   public ResponseEntity<ResponseData<List<PlayerSpecificMatchDTO>>> fetchAllPlayersMatches(@PathVariable String id) {
-    return ResponseEntity.ok(statisticsService.findAllMatchesPlayedByPlayer(id));
+    return ResponseEntity.ok(statisticsService.matchesPlayedByPlayer(id));
   }
 
   @GetMapping("/player/{id}/matches/latest")
   public ResponseEntity<ResponseData<List<PlayerSpecificMatchDTO>>> fetchPlayersLatestPlayedMatches(
       @PathVariable String id) {
-    return ResponseEntity.ok(statisticsService.findLatestFivePlayedMatchesByPlayer(id));
+    return ResponseEntity.ok(statisticsService.latestFivePlayedMatchesByPlayer(id));
   }
 
   @GetMapping("/player/{id}/goals")
   public ResponseEntity<ResponseData<Long>> fetchPlayersScoredGoals(@PathVariable String id) {
-    return ResponseEntity.ok(statisticsService.findPlayersScoredGoals(id));
+    return ResponseEntity.ok(statisticsService.playersScoredGoals(id));
   }
 
   @GetMapping("/player/{id}/teams")

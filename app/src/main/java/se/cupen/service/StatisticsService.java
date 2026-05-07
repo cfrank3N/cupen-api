@@ -46,11 +46,14 @@ public class StatisticsService {
      * @param playerId
      * @return
      */
-    public ResponseData<List<PlayerSpecificMatchDTO>> findAllMatchesPlayedByPlayer(String playerId) {
+    public ResponseData<List<PlayerSpecificMatchDTO>> matchesPlayedByPlayer(String playerId) {
 
-        Player player = playerRepo.findById(validateIdAndTransformToUuid(playerId))
-                .orElseThrow(() -> new ValidationException("Player not found", 404));
+        Player player = findPlayerById(playerId);
+        return findAllMatchesPlayedByPlayer(player);
 
+    }
+
+    private ResponseData<List<PlayerSpecificMatchDTO>> findAllMatchesPlayedByPlayer(Player player) {
         List<Team> playersTeams = player.getTeams();
 
         List<PlayerSpecificMatchDTO> playersMatches = matchRepo.findAll().stream()
@@ -60,15 +63,15 @@ public class StatisticsService {
                 .map(match -> MatchMapper.toPlayerSpecificDTO(match, playersTeams)).toList();
 
         return ResponseData.successful(playersMatches, "Matches fetched");
-
     }
 
     /**
      * @param playerId
      * @return
      */
-    public ResponseData<List<PlayerSpecificMatchDTO>> findLatestFivePlayedMatchesByPlayer(String playerId) {
-        List<PlayerSpecificMatchDTO> fiveLatestMatches = findAllMatchesPlayedByPlayer(playerId).getObject().stream()
+    public ResponseData<List<PlayerSpecificMatchDTO>> latestFivePlayedMatchesByPlayer(String playerId) {
+        Player player = findPlayerById(playerId);
+        List<PlayerSpecificMatchDTO> fiveLatestMatches = findAllMatchesPlayedByPlayer(player).getObject().stream()
                 .limit(5).toList();
         return ResponseData.successful(fiveLatestMatches, "5 Latest matches fetched");
     }
@@ -77,13 +80,13 @@ public class StatisticsService {
      * @param playerId
      * @return
      */
-    public ResponseData<Long> findPlayersScoredGoals(String playerId) {
+    public ResponseData<Long> playersScoredGoals(String playerId) {
 
         Player player = findPlayerById(playerId);
 
-        List<MatchEvent> playersGoals = findPlayersGoals(player.getId());
+        List<MatchEvent> playerEvents = findPlayersMatchEvents(player.getId());
 
-        Long scoredGoals = playersGoals.stream().filter(event -> event.getType().equals(EventType.GOAL)).count();
+        Long scoredGoals = playerEvents.stream().filter(event -> event.getType().equals(EventType.GOAL)).count();
 
         return ResponseData.successful(scoredGoals, "Scored goals fetched");
 
@@ -143,7 +146,7 @@ public class StatisticsService {
      */
     public ResponseData<PlayerSpecificMatchDTO> findBiggestWinByPlayer(String playerId) {
 
-        PlayerSpecificMatchDTO biggestWin = findAllMatchesPlayedByPlayer(playerId)
+        PlayerSpecificMatchDTO biggestWin = matchesPlayedByPlayer(playerId)
                 .getObject()
                 .stream()
                 .filter(match -> match.getResult().equals(MatchResult.WIN))
@@ -160,7 +163,7 @@ public class StatisticsService {
      */
     public ResponseData<PlayerSpecificMatchDTO> findBiggestLossByPlayer(String playerId) {
 
-        PlayerSpecificMatchDTO biggestLoss = findAllMatchesPlayedByPlayer(playerId)
+        PlayerSpecificMatchDTO biggestLoss = matchesPlayedByPlayer(playerId)
                 .getObject()
                 .stream()
                 .filter(match -> match.getResult().equals(MatchResult.LOSS))
@@ -184,7 +187,7 @@ public class StatisticsService {
         // Validate playerTwoId is valid or else throw exception
         findPlayerById(playerTwoId).getId().toString();
 
-        List<PlayerSpecificMatchDTO> headToHeadMatches = findAllMatchesPlayedByPlayer(playerOneId).getObject()
+        List<PlayerSpecificMatchDTO> headToHeadMatches = matchesPlayedByPlayer(playerOneId).getObject()
                 .stream()
                 .filter(match -> {
                     boolean playerOneIsTeamA = match.getTeamA().getPlayers().stream()
@@ -346,7 +349,7 @@ public class StatisticsService {
      * @param playerId
      * @return
      */
-    private List<MatchEvent> findPlayersGoals(UUID playerId) {
+    private List<MatchEvent> findPlayersMatchEvents(UUID playerId) {
 
         return matchEventRepo.findAllByPlayerId(playerId)
                 .orElseThrow(() -> new ValidationException("Player has no events registered", 404));
