@@ -168,6 +168,17 @@ public class DatabaseSeeder {
                 .matchType(MatchType.GROUP_STAGE)
                 .build();
 
+        Match matchFive = Match.builder()
+                .playedAt(Instant.now())
+                .teamA(teamA)
+                .teamB(teamB)
+                .tournament(tournament)
+                .matchGroup(MatchGroup.GROUP_B)
+                .matchType(MatchType.GROUP_STAGE)
+                .build();
+
+
+
         MatchEvent eventOne = MatchEvent.builder()
                 .match(matchOne)
                 .player(playerB)
@@ -231,19 +242,37 @@ public class DatabaseSeeder {
                 .type(EventType.GOAL)
                 .build();
 
+        MatchEvent eventTen = MatchEvent.builder()
+                .match(matchOne)
+                .player(playerB)
+                .team(teamA)
+                .type(EventType.GOAL)
+                .build();
+
+        MatchEvent eventEleven = MatchEvent.builder()
+                .match(matchOne)
+                .player(playerC)
+                .team(teamB)
+                .type(EventType.GOAL)
+                .build();
+
+
+
         List<MatchEvent> events = List.of(eventOne, eventTwo, eventThree);
         List<MatchEvent> eventsTwo = List.of(eventFour, eventFive);
         List<MatchEvent> eventsThree = List.of(eventSix, eventSeven, eventEight);
-        List<MatchEvent> allEvents = List.of(eventOne, eventTwo, eventThree, eventFour, eventFive, eventSix, eventSeven, eventEight, eventNine);
+        List<MatchEvent> eventsFour = List.of(eventTen, eventEleven);
+        List<MatchEvent> allEvents = List.of(eventOne, eventTwo, eventThree, eventFour, eventFive, eventSix, eventSeven, eventEight, eventNine, eventTen, eventEleven);
 
         matchOne.getEvents().addAll(events);
         matchTwo.getEvents().addAll(eventsTwo);
         matchThree.getEvents().addAll(eventsThree);
         matchFour.getEvents().add(eventNine);
+        matchFive.getEvents().addAll(eventsFour);
 
         playerRepo.saveAll(List.of(playerA, playerB, playerC, playerD, playerE, playerF));
         teamRepo.saveAll(List.of(teamA, teamB, teamC));
-        matchRepo.saveAll(List.of(matchOne, matchTwo, matchThree, matchFour));
+        matchRepo.saveAll(List.of(matchOne, matchTwo, matchThree, matchFour, matchFive));
         matchEventRepo.saveAll(allEvents);
     }
 }
