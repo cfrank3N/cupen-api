@@ -243,14 +243,14 @@ public class DatabaseSeeder {
                 .build();
 
         MatchEvent eventTen = MatchEvent.builder()
-                .match(matchOne)
+                .match(matchFive)
                 .player(playerB)
                 .team(teamA)
                 .type(EventType.GOAL)
                 .build();
 
         MatchEvent eventEleven = MatchEvent.builder()
-                .match(matchOne)
+                .match(matchFive)
                 .player(playerC)
                 .team(teamB)
                 .type(EventType.GOAL)
