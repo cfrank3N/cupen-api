@@ -203,7 +203,7 @@ public class StatisticsService {
         PlayerSpecificMatchDTO biggestWin = findAllMatchesPlayedByPlayer(player).getObject().stream()
                 .filter(match -> match.getResult().equals(MatchResult.WIN))
                 .max(Comparator.comparing(PlayerSpecificMatchDTO::getGoalDifference))
-                .orElse(new PlayerSpecificMatchDTO());
+                .orElse(null);
 
         return biggestWin;
     }
@@ -212,7 +212,7 @@ public class StatisticsService {
         PlayerSpecificMatchDTO biggestLoss = findAllMatchesPlayedByPlayer(player).getObject().stream()
                 .filter(match -> match.getResult().equals(MatchResult.LOSS))
                 .max(Comparator.comparing(PlayerSpecificMatchDTO::getGoalDifference))
-                .orElse(new PlayerSpecificMatchDTO());
+                .orElse(null);
 
         return biggestLoss;
     }
