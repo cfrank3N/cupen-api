@@ -14,6 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlayerViewStats {
+  private String name;
   private List<PlayerSpecificMatchDTO> lastFiveMatches;
   private List<PlayerSpecificTeamDTO> formerTeams;
   private SimplePlayerStatsDTO stats;

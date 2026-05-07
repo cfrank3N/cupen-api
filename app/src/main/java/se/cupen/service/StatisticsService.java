@@ -61,7 +61,12 @@ public class StatisticsService {
         List<PlayerSpecificTeamDTO> teams = findAllTeamsByPlayer(player);
         SimplePlayerStatsDTO stats = findCompressedStatsForPlayer(player);
 
-        PlayerViewStats playerStats = new PlayerViewStats(lastFiveMatches, teams, stats);
+        PlayerViewStats playerStats = PlayerViewStats.builder()
+                .name(player.getName())
+                .lastFiveMatches(lastFiveMatches)
+                .formerTeams(teams)
+                .stats(stats)
+                .build();
 
         return ResponseData.successful(playerStats, "Player stats fetched");
 
