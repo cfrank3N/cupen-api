@@ -84,21 +84,32 @@ public class StatisticsService {
 
         Player player = findPlayerById(playerId);
 
-        List<MatchEvent> playerEvents = findPlayersMatchEvents(player.getId());
-
-        Long scoredGoals = playerEvents.stream().filter(event -> event.getType().equals(EventType.GOAL)).count();
+        Long scoredGoals = findPlayersScoredGoals(player);
 
         return ResponseData.successful(scoredGoals, "Scored goals fetched");
 
+    }
+
+    private long findPlayersScoredGoals(Player player) {
+        List<MatchEvent> playerEvents = findPlayersMatchEvents(player.getId());
+        return playerEvents.stream().filter(event -> event.getType().equals(EventType.GOAL)).count();
     }
 
     /**
      * @param playerId
      * @return
      */
-    public ResponseData<List<PlayerSpecificTeamDTO>> findAllTeamsByPlayer(String playerId) {
+    public ResponseData<List<PlayerSpecificTeamDTO>> allTeamsByPlayer(String playerId) {
 
         Player player = findPlayerById(playerId);
+
+        List<PlayerSpecificTeamDTO> teamStats = findAllTeamsByPlayer(player);
+
+        return ResponseData.successful(teamStats, "Team stats fetched");
+
+    }
+
+    private List<PlayerSpecificTeamDTO> findAllTeamsByPlayer(Player player) {
 
         List<Team> teams = player.getTeams();
 
@@ -108,8 +119,7 @@ public class StatisticsService {
                 .map(team -> buildTeamStats(team, allMatches))
                 .toList();
 
-        return ResponseData.successful(teamStats, "Team stats fetched");
-
+        return teamStats;
     }
 
     /**
@@ -118,7 +128,9 @@ public class StatisticsService {
      */
     public ResponseData<SimplePlayerStatsDTO> findCompressedStatsForPlayer(String playerId) {
 
-        List<PlayerSpecificTeamDTO> playerTeamStats = findAllTeamsByPlayer(playerId).getObject();
+        Player player = findPlayerById(playerId);
+
+        List<PlayerSpecificTeamDTO> playerTeamStats = findAllTeamsByPlayer(player);
 
         int playedMatches = playerTeamStats.stream()
                 .mapToInt(stats -> stats.getLosses() + stats.getWins() + stats.getDraws()).sum();

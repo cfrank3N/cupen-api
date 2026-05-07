@@ -47,7 +47,7 @@ public class StatisticsController {
   @GetMapping("/player/{id}/teams")
   public ResponseEntity<ResponseData<List<PlayerSpecificTeamDTO>>> fetchAllPlayersFormerTeams(
       @PathVariable String id) {
-    return ResponseEntity.ok(statisticsService.findAllTeamsByPlayer(id));
+    return ResponseEntity.ok(statisticsService.allTeamsByPlayer(id));
   }
 
   @GetMapping("/player/{id}/simplestats")
