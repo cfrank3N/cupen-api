@@ -29,250 +29,251 @@ import se.cupen.util.MatchType;
 @Profile("dev")
 public class DatabaseSeeder {
 
-    private final TournamentRepo tournamentRepo;
-    private final MatchRepo matchRepo;
-    private final PlayerRepo playerRepo;
-    private final TeamRepo teamRepo;
-    private final MatchEventRepo matchEventRepo;
-    private final UserRepo userRepo;
+        private final TournamentRepo tournamentRepo;
+        private final MatchRepo matchRepo;
+        private final PlayerRepo playerRepo;
+        private final TeamRepo teamRepo;
+        private final MatchEventRepo matchEventRepo;
+        private final UserRepo userRepo;
 
-    public DatabaseSeeder(
-            TournamentRepo tournamentRepo,
-            MatchRepo matchRepo,
-            MatchEventRepo matchEventRepo,
-            PlayerRepo playerRepo,
-            TeamRepo teamRepo,
-            UserRepo userRepo) {
+        public DatabaseSeeder(
+                        TournamentRepo tournamentRepo,
+                        MatchRepo matchRepo,
+                        MatchEventRepo matchEventRepo,
+                        PlayerRepo playerRepo,
+                        TeamRepo teamRepo,
+                        UserRepo userRepo) {
 
-        this.matchEventRepo = matchEventRepo;
-        this.matchRepo = matchRepo;
-        this.playerRepo = playerRepo;
-        this.teamRepo = teamRepo;
-        this.tournamentRepo = tournamentRepo;
-        this.userRepo = userRepo;
+                this.matchEventRepo = matchEventRepo;
+                this.matchRepo = matchRepo;
+                this.playerRepo = playerRepo;
+                this.teamRepo = teamRepo;
+                this.tournamentRepo = tournamentRepo;
+                this.userRepo = userRepo;
 
-    }
+        }
 
-    @PostConstruct
-    public void seed() {
+        @PostConstruct
+        public void seed() {
 
-        User admin = User.builder()
-                .username("frank")
-                .password(BCrypt.hashpw("hej123", BCrypt.gensalt()))
-                .build();
+                User admin = User.builder()
+                                .username("frank")
+                                .password(BCrypt.hashpw("hej123", BCrypt.gensalt()))
+                                .build();
 
-        userRepo.save(admin);
+                userRepo.save(admin);
 
-        Player playerA = Player.builder()
-                .city("Nyköping")
-                .name("Albin Glysing")
-                .pricemoney(500)
-                .build();
+                Player playerA = Player.builder()
+                                .city("Nyköping")
+                                .name("Albin Glysing")
+                                .pricemoney(500)
+                                .imageUrl("https://res.cloudinary.com/drrwrnzjk/image/upload/q_auto/f_auto/v1778251804/abbe_x0ivyd.png")
+                                .build();
 
-        Player playerB = Player.builder()
-                .city("Stockholm")
-                .name("Adam Frank")
-                .pricemoney(0)
-                .build();
+                Player playerB = Player.builder()
+                                .city("Stockholm")
+                                .name("Adam Frank")
+                                .pricemoney(0)
+                                .imageUrl("https://res.cloudinary.com/drrwrnzjk/image/upload/q_auto/f_auto/v1778251804/franken_saqdd0.png")
+                                .build();
 
-        Player playerC = Player.builder()
-                .city("Nyköping")
-                .name("Alexander Wålinder")
-                .pricemoney(0)
-                .build();
+                Player playerC = Player.builder()
+                                .city("Nyköping")
+                                .name("Alexander Wålinder")
+                                .pricemoney(0)
+                                .imageUrl("https://res.cloudinary.com/drrwrnzjk/image/upload/q_auto/f_auto/v1778252631/walle_lsjh4o.png")
+                                .build();
 
-        Player playerD = Player.builder()
-                .city("Nyköping")
-                .name("Emil Rigo")
-                .pricemoney(2000)
-                .build();
+                Player playerD = Player.builder()
+                                .city("Nyköping")
+                                .name("Emil Rigo")
+                                .pricemoney(2000)
+                                .imageUrl("https://res.cloudinary.com/drrwrnzjk/image/upload/q_auto/f_auto/v1778252631/bagge_kzsshz.png")
+                                .build();
 
-        Player playerE = Player.builder()
-                .city("Nyköping")
-                .name("Samuel Malmqvist")
-                .pricemoney(3000)
-                .build();
+                Player playerE = Player.builder()
+                                .city("Nyköping")
+                                .name("Samuel Malmqvist")
+                                .pricemoney(3000)
+                                .imageUrl("https://res.cloudinary.com/drrwrnzjk/image/upload/q_auto/f_auto/v1778252631/sam_i78xvu.png")
+                                .build();
 
-        Player playerF = Player.builder()
-                .city("Nyköping")
-                .name("Oscar Glysing")
-                .pricemoney(500)
-                .build();
+                Player playerF = Player.builder()
+                                .city("Nyköping")
+                                .name("Oscar Glysing")
+                                .pricemoney(500)
+                                .imageUrl("https://res.cloudinary.com/drrwrnzjk/image/upload/q_auto/f_auto/v1778252631/ogge_n9trvo.png")
+                                .build();
 
+                List<Player> playersA = new ArrayList<>();
+                List<Player> playersB = new ArrayList<>();
+                List<Player> playersC = new ArrayList<>();
 
+                playersA.add(playerA);
+                playersA.add(playerB);
+                playersB.add(playerC);
+                playersB.add(playerD);
+                playersC.add(playerE);
+                playersC.add(playerF);
 
-        List<Player> playersA = new ArrayList<>();
-        List<Player> playersB = new ArrayList<>();
-        List<Player> playersC = new ArrayList<>();
+                Tournament tournament = Tournament.builder()
+                                .year(2026)
+                                .build();
 
-        playersA.add(playerA);
-        playersA.add(playerB);
-        playersB.add(playerC);
-        playersB.add(playerD);
-        playersC.add(playerE);
-        playersC.add(playerF);
+                tournamentRepo.save(tournament);
 
-        Tournament tournament = Tournament.builder()
-                .year(2026)
-                .build();
+                Team teamA = Team.builder()
+                                .players(playersA)
+                                .tournament(tournament)
+                                .build();
 
-        tournamentRepo.save(tournament);
+                Team teamB = Team.builder()
+                                .players(playersB)
+                                .tournament(tournament)
+                                .build();
 
-        Team teamA = Team.builder()
-                .players(playersA)
-                .tournament(tournament)
-                .build();
+                Team teamC = Team.builder()
+                                .players(playersC)
+                                .tournament(tournament)
+                                .build();
 
-        Team teamB = Team.builder()
-                .players(playersB)
-                .tournament(tournament)
-                .build();
+                Match matchOne = Match.builder()
+                                .playedAt(Instant.now())
+                                .teamA(teamA)
+                                .teamB(teamB)
+                                .tournament(tournament)
+                                .matchGroup(MatchGroup.GROUP_B)
+                                .matchType(MatchType.GROUP_STAGE)
+                                .build();
 
-        Team teamC = Team.builder()
-                .players(playersC)
-                .tournament(tournament)
-                .build();
+                Match matchTwo = Match.builder()
+                                .playedAt(Instant.now())
+                                .teamA(teamB)
+                                .teamB(teamA)
+                                .tournament(tournament)
+                                .matchType(MatchType.SEMI_FINAL)
+                                .build();
 
-        Match matchOne = Match.builder()
-                .playedAt(Instant.now())
-                .teamA(teamA)
-                .teamB(teamB)
-                .tournament(tournament)
-                .matchGroup(MatchGroup.GROUP_B)
-                .matchType(MatchType.GROUP_STAGE)
-                .build();
+                Match matchThree = Match.builder()
+                                .playedAt(Instant.now())
+                                .teamA(teamB)
+                                .teamB(teamC)
+                                .tournament(tournament)
+                                .matchGroup(MatchGroup.GROUP_C)
+                                .matchType(MatchType.GROUP_STAGE)
+                                .build();
 
-        Match matchTwo = Match.builder()
-                .playedAt(Instant.now())
-                .teamA(teamB)
-                .teamB(teamA)
-                .tournament(tournament)
-                .matchType(MatchType.SEMI_FINAL)
-                .build();
+                Match matchFour = Match.builder()
+                                .playedAt(Instant.now())
+                                .teamA(teamA)
+                                .teamB(teamB)
+                                .tournament(tournament)
+                                .matchGroup(MatchGroup.GROUP_B)
+                                .matchType(MatchType.GROUP_STAGE)
+                                .build();
 
-        Match matchThree = Match.builder()
-                .playedAt(Instant.now())
-                .teamA(teamB)
-                .teamB(teamC)
-                .tournament(tournament)
-                .matchGroup(MatchGroup.GROUP_C)
-                .matchType(MatchType.GROUP_STAGE)
-                .build();
+                Match matchFive = Match.builder()
+                                .playedAt(Instant.now())
+                                .teamA(teamA)
+                                .teamB(teamB)
+                                .tournament(tournament)
+                                .matchGroup(MatchGroup.GROUP_B)
+                                .matchType(MatchType.GROUP_STAGE)
+                                .build();
 
-        Match matchFour = Match.builder()
-                .playedAt(Instant.now())
-                .teamA(teamA)
-                .teamB(teamB)
-                .tournament(tournament)
-                .matchGroup(MatchGroup.GROUP_B)
-                .matchType(MatchType.GROUP_STAGE)
-                .build();
+                MatchEvent eventOne = MatchEvent.builder()
+                                .match(matchOne)
+                                .player(playerB)
+                                .team(teamA)
+                                .type(EventType.GOAL)
+                                .build();
 
-        Match matchFive = Match.builder()
-                .playedAt(Instant.now())
-                .teamA(teamA)
-                .teamB(teamB)
-                .tournament(tournament)
-                .matchGroup(MatchGroup.GROUP_B)
-                .matchType(MatchType.GROUP_STAGE)
-                .build();
+                MatchEvent eventTwo = MatchEvent.builder()
+                                .match(matchOne)
+                                .player(playerD)
+                                .team(teamB)
+                                .type(EventType.GOAL)
+                                .build();
 
+                MatchEvent eventThree = MatchEvent.builder()
+                                .match(matchOne)
+                                .player(playerA)
+                                .team(teamA)
+                                .type(EventType.GOAL)
+                                .build();
 
+                MatchEvent eventFour = MatchEvent.builder()
+                                .match(matchTwo)
+                                .player(playerB)
+                                .team(teamA)
+                                .type(EventType.GOAL)
+                                .build();
 
-        MatchEvent eventOne = MatchEvent.builder()
-                .match(matchOne)
-                .player(playerB)
-                .team(teamA)
-                .type(EventType.GOAL)
-                .build();
+                MatchEvent eventFive = MatchEvent.builder()
+                                .match(matchTwo)
+                                .player(playerB)
+                                .team(teamA)
+                                .type(EventType.GOAL)
+                                .build();
 
-        MatchEvent eventTwo = MatchEvent.builder()
-                .match(matchOne)
-                .player(playerD)
-                .team(teamB)
-                .type(EventType.GOAL)
-                .build();
+                MatchEvent eventSix = MatchEvent.builder()
+                                .match(matchThree)
+                                .player(playerC)
+                                .team(teamB)
+                                .type(EventType.GOAL)
+                                .build();
 
-        MatchEvent eventThree = MatchEvent.builder()
-                .match(matchOne)
-                .player(playerA)
-                .team(teamA)
-                .type(EventType.GOAL)
-                .build();
+                MatchEvent eventSeven = MatchEvent.builder()
+                                .match(matchThree)
+                                .player(playerC)
+                                .team(teamB)
+                                .type(EventType.GOAL)
+                                .build();
 
-        MatchEvent eventFour = MatchEvent.builder()
-                .match(matchTwo)
-                .player(playerB)
-                .team(teamA)
-                .type(EventType.GOAL)
-                .build();
+                MatchEvent eventEight = MatchEvent.builder()
+                                .match(matchThree)
+                                .player(playerD)
+                                .team(teamB)
+                                .type(EventType.GOAL)
+                                .build();
 
-        MatchEvent eventFive = MatchEvent.builder()
-                .match(matchTwo)
-                .player(playerB)
-                .team(teamA)
-                .type(EventType.GOAL)
-                .build();
+                MatchEvent eventNine = MatchEvent.builder()
+                                .match(matchFour)
+                                .player(playerD)
+                                .team(teamB)
+                                .type(EventType.GOAL)
+                                .build();
 
-        MatchEvent eventSix = MatchEvent.builder()
-                .match(matchThree)
-                .player(playerC)
-                .team(teamB)
-                .type(EventType.GOAL)
-                .build();
+                MatchEvent eventTen = MatchEvent.builder()
+                                .match(matchFive)
+                                .player(playerB)
+                                .team(teamA)
+                                .type(EventType.GOAL)
+                                .build();
 
-        MatchEvent eventSeven = MatchEvent.builder()
-                .match(matchThree)
-                .player(playerC)
-                .team(teamB)
-                .type(EventType.GOAL)
-                .build();
+                MatchEvent eventEleven = MatchEvent.builder()
+                                .match(matchFive)
+                                .player(playerC)
+                                .team(teamB)
+                                .type(EventType.GOAL)
+                                .build();
 
-        MatchEvent eventEight = MatchEvent.builder()
-                .match(matchThree)
-                .player(playerD)
-                .team(teamB)
-                .type(EventType.GOAL)
-                .build();
+                List<MatchEvent> events = List.of(eventOne, eventTwo, eventThree);
+                List<MatchEvent> eventsTwo = List.of(eventFour, eventFive);
+                List<MatchEvent> eventsThree = List.of(eventSix, eventSeven, eventEight);
+                List<MatchEvent> eventsFour = List.of(eventTen, eventEleven);
+                List<MatchEvent> allEvents = List.of(eventOne, eventTwo, eventThree, eventFour, eventFive, eventSix,
+                                eventSeven, eventEight, eventNine, eventTen, eventEleven);
 
-        MatchEvent eventNine = MatchEvent.builder()
-                .match(matchFour)
-                .player(playerD)
-                .team(teamB)
-                .type(EventType.GOAL)
-                .build();
+                matchOne.getEvents().addAll(events);
+                matchTwo.getEvents().addAll(eventsTwo);
+                matchThree.getEvents().addAll(eventsThree);
+                matchFour.getEvents().add(eventNine);
+                matchFive.getEvents().addAll(eventsFour);
 
-        MatchEvent eventTen = MatchEvent.builder()
-                .match(matchFive)
-                .player(playerB)
-                .team(teamA)
-                .type(EventType.GOAL)
-                .build();
-
-        MatchEvent eventEleven = MatchEvent.builder()
-                .match(matchFive)
-                .player(playerC)
-                .team(teamB)
-                .type(EventType.GOAL)
-                .build();
-
-
-
-        List<MatchEvent> events = List.of(eventOne, eventTwo, eventThree);
-        List<MatchEvent> eventsTwo = List.of(eventFour, eventFive);
-        List<MatchEvent> eventsThree = List.of(eventSix, eventSeven, eventEight);
-        List<MatchEvent> eventsFour = List.of(eventTen, eventEleven);
-        List<MatchEvent> allEvents = List.of(eventOne, eventTwo, eventThree, eventFour, eventFive, eventSix, eventSeven, eventEight, eventNine, eventTen, eventEleven);
-
-        matchOne.getEvents().addAll(events);
-        matchTwo.getEvents().addAll(eventsTwo);
-        matchThree.getEvents().addAll(eventsThree);
-        matchFour.getEvents().add(eventNine);
-        matchFive.getEvents().addAll(eventsFour);
-
-        playerRepo.saveAll(List.of(playerA, playerB, playerC, playerD, playerE, playerF));
-        teamRepo.saveAll(List.of(teamA, teamB, teamC));
-        matchRepo.saveAll(List.of(matchOne, matchTwo, matchThree, matchFour, matchFive));
-        matchEventRepo.saveAll(allEvents);
-    }
+                playerRepo.saveAll(List.of(playerA, playerB, playerC, playerD, playerE, playerF));
+                teamRepo.saveAll(List.of(teamA, teamB, teamC));
+                matchRepo.saveAll(List.of(matchOne, matchTwo, matchThree, matchFour, matchFive));
+                matchEventRepo.saveAll(allEvents);
+        }
 }

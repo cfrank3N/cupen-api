@@ -18,5 +18,6 @@ public class PlayerDTO {
   private String city;
   private long pricemoney;
   private Integer rating;
+  private String imageUrl;
 
 }

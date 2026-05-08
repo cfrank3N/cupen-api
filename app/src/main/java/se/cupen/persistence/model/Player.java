@@ -30,6 +30,7 @@ public class Player {
   private String city;
   private long pricemoney;
   private Integer rating;
+  private String imageUrl;
 
   @ManyToMany(mappedBy = "players")
   @Builder.Default

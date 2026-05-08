@@ -17,5 +17,6 @@ public class CreatePlayer {
   private String city;
   private Integer pricemoney;
   private Integer rating;
+  private String imageUrl;
 
 }
