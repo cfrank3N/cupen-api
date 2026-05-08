@@ -66,6 +66,7 @@ public class StatisticsService {
 
         PlayerViewStats playerStats = PlayerViewStats.builder()
                 .name(player.getName())
+                .imageUrl(player.getImageUrl())
                 .lastFiveMatches(lastFiveMatches)
                 .formerTeams(teams)
                 .stats(stats)
