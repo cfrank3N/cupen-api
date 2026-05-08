@@ -60,7 +60,7 @@ public class StatisticsService {
                 .limit(5).toList();
         List<PlayerSpecificTeamDTO> teams = findAllTeamsByPlayer(player);
         SimplePlayerStatsDTO stats = findCompressedStatsForPlayer(player);
-        List<HeadToHeadPlayerStats> headTohead = findStatsAgainsAllPlayers(player.getId().toString()).getObject();
+        List<HeadToHeadPlayerStats> statsAgainstAll = findStatsAgainsAllPlayers(player.getId().toString()).getObject();
         PlayerSpecificMatchDTO biggestWin = findBiggestWinByPlayer(player);
         PlayerSpecificMatchDTO biggestLoss = findBiggestLossByPlayer(player);
 
@@ -69,7 +69,7 @@ public class StatisticsService {
                 .lastFiveMatches(lastFiveMatches)
                 .formerTeams(teams)
                 .stats(stats)
-                .headToHead(headTohead)
+                .statsAgainstAll(statsAgainstAll)
                 .biggestWin(biggestWin)
                 .biggestLoss(biggestLoss)
                 .build();
