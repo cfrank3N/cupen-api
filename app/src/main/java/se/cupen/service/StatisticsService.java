@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import se.cupen.dto.GoalsScoredByPlayer;
 import se.cupen.dto.HeadToHeadPlayerStats;
 import se.cupen.dto.PlayerDTO;
-import se.cupen.dto.PlayerPoints;
+import se.cupen.dto.PlayerStats;
 import se.cupen.dto.PlayerSpecificMatchDTO;
 import se.cupen.dto.PlayerSpecificTeamDTO;
 import se.cupen.dto.PlayerViewStats;
@@ -185,19 +185,29 @@ public class StatisticsService {
 
     }
 
-    public ResponseData<List<PlayerPoints>> AllPlayersTotalScore() {
+    public ResponseData<List<PlayerStats>> AllPlayersTotalScore() {
         List<Player> players = playerRepo.findAll();
 
-        List<PlayerPoints> stats = players.stream()
+        List<PlayerStats> stats = players.stream()
                 .map(player -> {
                     SimplePlayerStatsDTO simpleStats = findCompressedStatsForPlayer(player);
                     int points = (simpleStats.getWonMatches() * 3) + (simpleStats.getDrawnMatches() * 2);
-                    return new PlayerPoints(PlayerMapper.toDTO(player), points);
+
+                    return PlayerStats.builder()
+                            .player(PlayerMapper.toDTO(player))
+                            .points(points)
+                            .playedMatches(simpleStats.getPlayedMatches())
+                            .wonMatches(simpleStats.getWonMatches())
+                            .drawnMatches(simpleStats.getDrawnMatches())
+                            .lostMatches(simpleStats.getLostMatches())
+                            .goalDifference(simpleStats.getGoalDifference())
+                            .titles(simpleStats.getTitles())
+                            .build();
                 })
-                .sorted(Comparator.comparing(PlayerPoints::getPoints).reversed())
+                .sorted(Comparator.comparing(PlayerStats::getPoints).reversed())
                 .toList();
 
-        return ResponseData.successful(stats, "Player points fetched");
+        return ResponseData.successful(stats, "Player stats fetched");
     }
 
     /**

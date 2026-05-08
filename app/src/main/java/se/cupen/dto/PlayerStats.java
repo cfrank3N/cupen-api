@@ -11,7 +11,14 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlayerPoints {
+public class PlayerStats {
   private PlayerDTO player;
   private Integer points;
+  private Integer playedMatches;
+  private Integer wonMatches;
+  private Integer drawnMatches;
+  private Integer lostMatches;
+  private String goalDifference;
+  private Integer titles;
+
 }
