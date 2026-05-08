@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import se.cupen.dto.GoalsScoredByPlayer;
 import se.cupen.dto.HeadToHeadPlayerStats;
 import se.cupen.dto.PlayerStats;
+import se.cupen.dto.PlayerTeamGoalStats;
 import se.cupen.dto.PlayerSpecificMatchDTO;
 import se.cupen.dto.PlayerSpecificTeamDTO;
 import se.cupen.dto.PlayerViewStats;
@@ -92,6 +93,11 @@ public class StatisticsController {
   @GetMapping("/marathontable")
   public ResponseEntity<ResponseData<List<PlayerStats>>> fetchAllPlayersTotalScore() {
     return ResponseEntity.ok(statisticsService.AllPlayersTotalScore());
+  }
+
+  @GetMapping("/teamgoals")
+  public ResponseEntity<ResponseData<List<PlayerTeamGoalStats>>> fetchAllPlayersTeamGoalStats() {
+    return ResponseEntity.ok(statisticsService.averageTeamGoalsScoredByAllPlayers());
   }
 
 }

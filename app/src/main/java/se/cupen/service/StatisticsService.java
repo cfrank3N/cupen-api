@@ -12,6 +12,7 @@ import se.cupen.dto.GoalsScoredByPlayer;
 import se.cupen.dto.HeadToHeadPlayerStats;
 import se.cupen.dto.PlayerDTO;
 import se.cupen.dto.PlayerStats;
+import se.cupen.dto.PlayerTeamGoalStats;
 import se.cupen.dto.PlayerSpecificMatchDTO;
 import se.cupen.dto.PlayerSpecificTeamDTO;
 import se.cupen.dto.PlayerViewStats;
@@ -182,6 +183,33 @@ public class StatisticsService {
                 .lostMatches(lostMatches)
                 .goalDifference(scoredGoals + "-" + concededGoals)
                 .build();
+
+    }
+
+    public ResponseData<List<PlayerTeamGoalStats>> averageTeamGoalsScoredByAllPlayers() {
+
+        List<Player> players = playerRepo.findAll();
+
+        List<PlayerTeamGoalStats> teamGoalStats = players.stream()
+                .map(player -> {
+
+                    List<PlayerSpecificTeamDTO> playerTeams = findAllTeamsByPlayer(player);
+
+                    int goals = playerTeams.stream().mapToInt(PlayerSpecificTeamDTO::getScoredGoals).sum();
+                    int playedMatches = playerTeams.stream()
+                            .mapToInt(stats -> stats.getLosses() + stats.getWins() + stats.getDraws()).sum();
+                    double averageGoals = (double) goals / playedMatches;
+
+                    return PlayerTeamGoalStats.builder()
+                            .player(PlayerMapper.toDTO(player))
+                            .goals(goals)
+                            .averageGoals(averageGoals)
+                            .build();
+
+                }).sorted(Comparator.comparing(PlayerTeamGoalStats::getGoals).reversed())
+                .toList();
+
+        return ResponseData.successful(teamGoalStats, "Stats fetched");
 
     }
 
