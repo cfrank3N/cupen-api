@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import se.cupen.dto.GoalsScoredByPlayer;
 import se.cupen.dto.HeadToHeadPlayerStats;
 import se.cupen.dto.PlayerDTO;
+import se.cupen.dto.PlayerPoints;
 import se.cupen.dto.PlayerSpecificMatchDTO;
 import se.cupen.dto.PlayerSpecificTeamDTO;
 import se.cupen.dto.PlayerViewStats;
@@ -182,6 +183,21 @@ public class StatisticsService {
                 .goalDifference(scoredGoals + "-" + concededGoals)
                 .build();
 
+    }
+
+    public ResponseData<List<PlayerPoints>> AllPlayersTotalScore() {
+        List<Player> players = playerRepo.findAll();
+
+        List<PlayerPoints> stats = players.stream()
+                .map(player -> {
+                    SimplePlayerStatsDTO simpleStats = findCompressedStatsForPlayer(player);
+                    int points = (simpleStats.getWonMatches() * 3) + (simpleStats.getDrawnMatches() * 2);
+                    return new PlayerPoints(PlayerMapper.toDTO(player), points);
+                })
+                .sorted(Comparator.comparing(PlayerPoints::getPoints).reversed())
+                .toList();
+
+        return ResponseData.successful(stats, "Player points fetched");
     }
 
     /**
