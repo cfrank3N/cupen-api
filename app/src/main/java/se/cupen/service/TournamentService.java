@@ -1,5 +1,6 @@
 package se.cupen.service;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -52,13 +53,15 @@ public class TournamentService {
 
   public ResponseData<List<TournamentDTO>> allTournaments() {
     List<TournamentDTO> tournaments = tournamentRepo.findAll().stream()
+        .sorted(Comparator.comparing(Tournament::getYear))
         .map(t -> {
           return TournamentDTO.builder()
               .id(t.getId())
               .year(t.getYear())
               .teams(t.getTeams().stream().map(TeamMapper::toDTO).toList())
               .build();
-        }).toList();
+        })
+        .toList();
 
     return ResponseData.successful(tournaments, "Tournaments fetched");
   }

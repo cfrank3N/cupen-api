@@ -1,5 +1,7 @@
 package se.cupen.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -379,7 +381,10 @@ public class StatisticsService {
         int goalDifference = matchesAgainstOpponent.stream()
                 .mapToInt(PlayerSpecificMatchDTO::getGoalDifference)
                 .sum();
-        double winPercentage = (double) wonMatches / playedMatches * 100;
+        double winPercentageRaw = (double) wonMatches / playedMatches * 100;
+        double winPercentage = BigDecimal.valueOf(winPercentageRaw)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
 
         return HeadToHeadPlayerStats.builder()
                 .playedMatches(playedMatches)

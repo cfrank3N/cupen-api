@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import se.cupen.dto.TournamentDTO;
@@ -13,7 +14,8 @@ import se.cupen.dto.creation.CreateTournament;
 import se.cupen.service.TournamentService;
 import se.cupen.util.ResponseData;
 
-@RestController("/api")
+@RestController()
+@RequestMapping("/api")
 public class TournamentController {
 
   private TournamentService service;
