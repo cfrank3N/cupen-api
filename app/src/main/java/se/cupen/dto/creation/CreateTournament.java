@@ -1,8 +1,4 @@
-package se.cupen.dto;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+package se.cupen.dto.creation;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,10 +11,6 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TournamentDTO {
-  private UUID id;
+public class CreateTournament {
   private int year;
-
-  @Builder.Default
-  private List<TeamDTO> teams = new ArrayList<>();
 }
