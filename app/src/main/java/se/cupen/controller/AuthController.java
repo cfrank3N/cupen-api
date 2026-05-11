@@ -44,7 +44,7 @@ public class AuthController {
     return ResponseEntity.ok().headers(headers).body(response);
   }
 
-  @GetMapping("/refresh")
+  @PostMapping("/refresh")
   @PreAuthorize("hasAnyRole('ADMIN')")
   public ResponseEntity<ResponseData<String>> refreshJwt() {
 

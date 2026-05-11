@@ -45,9 +45,9 @@ public class AuthService {
         .from("refreshToken", refreshTokenAsString)
         .httpOnly(true)
         .secure(false)
-        .sameSite("None")
+        .sameSite("Lax")
         .path("/auth/refresh")
-        .maxAge(604800L) // 7 days
+        .maxAge(25200L) // 7 hours
         .build();
 
     TokenPair tokenPair = TokenPair.builder()
