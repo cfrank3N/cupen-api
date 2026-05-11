@@ -3,6 +3,7 @@ package se.cupen.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +31,7 @@ public class TournamentController {
   }
 
   @PostMapping("/tournaments")
+  @PreAuthorize("hasAnyRole('ADMIN')")
   public ResponseEntity<ResponseData<TournamentDTO>> createTournament(@RequestBody CreateTournament tournament) {
 
     ResponseData<TournamentDTO> response = service.createTournament(tournament);

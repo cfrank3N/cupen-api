@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import se.cupen.dto.GoalsScoredByPlayer;
 import se.cupen.dto.HeadToHeadPlayerStats;
+import se.cupen.dto.MatchDTO;
 import se.cupen.dto.PlayerDTO;
 import se.cupen.dto.PlayerStats;
 import se.cupen.dto.PlayerTeamGoalStats;
@@ -19,16 +20,22 @@ import se.cupen.dto.PlayerSpecificMatchDTO;
 import se.cupen.dto.PlayerSpecificTeamDTO;
 import se.cupen.dto.PlayerViewStats;
 import se.cupen.dto.SimplePlayerStatsDTO;
+import se.cupen.dto.TeamDTO;
+import se.cupen.dto.TournamentDTO;
 import se.cupen.exception.ValidationException;
 import se.cupen.mapper.MatchMapper;
 import se.cupen.mapper.PlayerMapper;
+import se.cupen.mapper.TeamMapper;
 import se.cupen.persistence.model.Match;
 import se.cupen.persistence.model.MatchEvent;
 import se.cupen.persistence.model.Player;
 import se.cupen.persistence.model.Team;
+import se.cupen.persistence.model.Tournament;
 import se.cupen.persistence.repository.MatchEventRepo;
 import se.cupen.persistence.repository.MatchRepo;
 import se.cupen.persistence.repository.PlayerRepo;
+import se.cupen.persistence.repository.TeamRepo;
+import se.cupen.persistence.repository.TournamentRepo;
 import se.cupen.util.EventType;
 import se.cupen.util.MatchResult;
 import se.cupen.util.ResponseData;
@@ -39,13 +46,20 @@ public class StatisticsService {
     private final MatchRepo matchRepo;
     private final MatchEventRepo matchEventRepo;
     private final PlayerRepo playerRepo;
+    private final TournamentRepo tournamentRepo;
+    private final TeamRepo teamRepo;
 
-    public StatisticsService(MatchRepo matchRepo, MatchEventRepo matchEventRepo, PlayerRepo playerRepo) {
+    public StatisticsService(MatchRepo matchRepo, MatchEventRepo matchEventRepo, PlayerRepo playerRepo,
+            TournamentRepo tournamentRepo, TeamRepo teamRepo) {
         this.matchEventRepo = matchEventRepo;
         this.matchRepo = matchRepo;
         this.playerRepo = playerRepo;
+        this.tournamentRepo = tournamentRepo;
+        this.teamRepo = teamRepo;
     }
 
+    // TODO: Add get all players in this sercvice and controller and change the api
+    // call in the frontend
     // TODO: Add non required RequestParams like year, matchType, etc.
     /**
      * @param playerId
@@ -56,6 +70,39 @@ public class StatisticsService {
         Player player = findPlayerById(playerId);
         return findAllMatchesPlayedByPlayer(player);
 
+    }
+
+    public ResponseData<List<TournamentDTO>> allTournaments() {
+        List<TournamentDTO> tournaments = tournamentRepo.findAll().stream()
+                .sorted(Comparator.comparing(Tournament::getYear))
+                .map(t -> {
+                    return TournamentDTO.builder()
+                            .id(t.getId())
+                            .year(t.getYear())
+                            .teams(t.getTeams().stream().map(TeamMapper::toDTO).toList())
+                            .build();
+                })
+                .toList();
+
+        return ResponseData.successful(tournaments, "Tournaments fetched");
+    }
+
+    public ResponseData<List<PlayerDTO>> allPlayers() {
+        List<PlayerDTO> players = playerRepo.findAll().stream().map(player -> PlayerMapper.toDTO(player)).toList();
+        return ResponseData.successful(players, "All players fetched");
+    }
+
+    public ResponseData<List<MatchDTO>> allMatches() {
+        List<MatchDTO> matches = matchRepo.findAll().stream()
+                .sorted(Comparator.comparing(Match::getPlayedAt).reversed())
+                .map(match -> MatchMapper.toDTO(match)).toList();
+
+        return ResponseData.successful(matches, "Matches fetched");
+    }
+
+    public ResponseData<List<TeamDTO>> allTeams() {
+        List<TeamDTO> teams = teamRepo.findAll().stream().map(TeamMapper::toDTO).toList();
+        return ResponseData.successful(teams, "All teams fetched");
     }
 
     public ResponseData<PlayerViewStats> playerStats(String playerId) {

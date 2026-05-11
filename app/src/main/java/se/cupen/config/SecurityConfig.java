@@ -20,7 +20,8 @@ import se.cupen.service.UserService;
 @EnableWebSecurity
 public class SecurityConfig {
 
-  private final String[] AUTHENTICATED_PATHS = { "/auth/refresh" };
+  private final String[] AUTHENTICATED_PATHS = { "/auth/refresh", "/api/players", "/api/teams/{tournamentId}",
+      "/api/matches", "/api/matches/events", "/api/tournaments" };
 
   private final JwtService jwtService;
   private final UserService userService;
@@ -46,6 +47,7 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable())
         .cors(cors -> cors.configurationSource(corsConfigurationSource))
         .authorizeHttpRequests(auth -> auth
+            .requestMatchers(org.springframework.http.HttpMethod.GET, AUTHENTICATED_PATHS).permitAll()
             .requestMatchers(AUTHENTICATED_PATHS).authenticated()
             .anyRequest().permitAll())
         .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);

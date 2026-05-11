@@ -3,6 +3,7 @@ package se.cupen.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +33,7 @@ public class PlayerController {
   }
 
   @PostMapping("/players")
+  @PreAuthorize("hasAnyRole('ADMIN')")
   public ResponseEntity<ResponseData<List<PlayerDTO>>> insertPlayers(@RequestBody List<CreatePlayer> players) {
     ResponseData<List<PlayerDTO>> response = playerService.insertPlayers(players);
     return ResponseEntity.status(HttpStatus.SC_CREATED).body(response);

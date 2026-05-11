@@ -10,12 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import se.cupen.dto.GoalsScoredByPlayer;
 import se.cupen.dto.HeadToHeadPlayerStats;
+import se.cupen.dto.MatchDTO;
+import se.cupen.dto.PlayerDTO;
 import se.cupen.dto.PlayerStats;
 import se.cupen.dto.PlayerTeamGoalStats;
 import se.cupen.dto.PlayerSpecificMatchDTO;
 import se.cupen.dto.PlayerSpecificTeamDTO;
 import se.cupen.dto.PlayerViewStats;
 import se.cupen.dto.SimplePlayerStatsDTO;
+import se.cupen.dto.TeamDTO;
+import se.cupen.dto.TournamentDTO;
 import se.cupen.service.StatisticsService;
 import se.cupen.util.ResponseData;
 
@@ -29,6 +33,25 @@ public class StatisticsController {
     this.statisticsService = statisticsService;
   }
 
+  @GetMapping("/players")
+  public ResponseEntity<ResponseData<List<PlayerDTO>>> fetchAllPlayers() {
+    return ResponseEntity.ok(statisticsService.allPlayers());
+  }
+
+  @GetMapping("/teams")
+  public ResponseEntity<ResponseData<List<TeamDTO>>> fetchAllTeams() {
+    return ResponseEntity.ok(statisticsService.allTeams());
+  }
+
+  @GetMapping("/matches")
+  public ResponseEntity<ResponseData<List<MatchDTO>>> fetchAllMatches() {
+    return ResponseEntity.ok(statisticsService.allMatches());
+  }
+
+  @GetMapping("/tournaments")
+  public ResponseEntity<ResponseData<List<TournamentDTO>>> fetchAllTournaments() {
+    return ResponseEntity.ok(statisticsService.allTournaments());
+  }
   // TODO: Add endpoint /player/{id} that summarizes most of the stats
 
   @GetMapping("player/{id}")

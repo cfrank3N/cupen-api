@@ -3,6 +3,7 @@ package se.cupen.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,12 +38,14 @@ public class MatchController {
   }
 
   @PostMapping("/matches")
+  @PreAuthorize("hasAnyRole('ADMIN')")
   public ResponseEntity<ResponseData<List<MatchDTO>>> createMatches(@RequestBody List<CreateMatch> matches) {
     ResponseData<List<MatchDTO>> response = matchService.createMatches(matches);
     return ResponseEntity.status(HttpStatus.SC_CREATED).body(response);
   }
 
   @PostMapping("/matches/events")
+  @PreAuthorize("hasAnyRole('ADMIN')")
   public ResponseEntity<ResponseData<List<MatchEventDTO>>> createMatchEvents(
       @RequestBody List<CreateMatchEvent> events) {
     ResponseData<List<MatchEventDTO>> response = matchService.createMatchEvents(events);
