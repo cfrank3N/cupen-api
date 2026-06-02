@@ -15,9 +15,11 @@ import se.cupen.util.ResponseData;
 public class PlayerService {
 
   private final PlayerRepo playerRepo;
+  private final MediaUploadService mediaService;
 
-  public PlayerService(PlayerRepo playerRepo) {
+  public PlayerService(PlayerRepo playerRepo, MediaUploadService mediaService) {
     this.playerRepo = playerRepo;
+    this.mediaService = mediaService;
   }
 
   public ResponseData<List<PlayerDTO>> findAllPlayers() {
@@ -25,12 +27,23 @@ public class PlayerService {
     return ResponseData.successful(players, "All players fetched");
   }
 
-  public ResponseData<List<PlayerDTO>> insertPlayers(List<CreatePlayer> players) {
+  public ResponseData<PlayerDTO> insertPlayer(CreatePlayer player) {
 
-    List<Player> playersToCreate = players.stream().map(PlayerMapper::fromCreationDTO).toList();
+    Player playerToCreate = Player.builder()
+        .city(player.getCity())
+        .name(player.getName())
+        .build();
 
-    List<PlayerDTO> createdPlayers = playerRepo.saveAll(playersToCreate).stream().map(PlayerMapper::toDTO).toList();
+    // Save image via mediaService and set returned value from operation as imageURL
+    if (player.getImage() != null && !player.getImage().isEmpty()) {
+      playerToCreate.setImageUrl(mediaService.uploadImage(player.getImage()));
+    } else {
+      playerToCreate.setImageUrl(
+          "https://res.cloudinary.com/drrwrnzjk/image/upload/q_auto/f_auto/v1778501155/vector-flat-illustration-grayscale-avatar-user-profile-person-icon-gender-neutral-silhouette-profile-picture-suitable-social-media-profiles-icons-screensavers-as-templatex9xa_719432-2191_nb5gk9.avif");
+    }
 
-    return ResponseData.successful(createdPlayers, "Players created");
+    PlayerDTO createdPlayer = PlayerMapper.toDTO(playerRepo.save(playerToCreate));
+
+    return ResponseData.successful(createdPlayer, "Player created");
   }
 }

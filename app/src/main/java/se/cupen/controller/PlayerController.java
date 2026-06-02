@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,8 +34,8 @@ public class PlayerController {
 
   @PostMapping("/players")
   @PreAuthorize("hasAnyRole('ADMIN')")
-  public ResponseEntity<ResponseData<List<PlayerDTO>>> insertPlayers(@RequestBody List<CreatePlayer> players) {
-    ResponseData<List<PlayerDTO>> response = playerService.insertPlayers(players);
+  public ResponseEntity<ResponseData<PlayerDTO>> insertPlayer(@ModelAttribute CreatePlayer player) {
+    ResponseData<PlayerDTO> response = playerService.insertPlayer(player);
     return ResponseEntity.status(HttpStatus.SC_CREATED).body(response);
   }
 }

@@ -25,7 +25,7 @@ public class MediaUploadService {
       Map<?, ?> result = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
           "resource_type", "auto"));
 
-      return (String) result.get("url");
+      return (String) result.get("secure_url");
     } catch (Exception e) {
       throw new ValidationException("Bad boy", HttpStatus.SC_BAD_REQUEST);
     }

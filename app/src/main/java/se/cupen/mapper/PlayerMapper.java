@@ -24,7 +24,6 @@ public class PlayerMapper {
                                 .city(player.getCity())
                                 .pricemoney(player.getPricemoney())
                                 .rating(player.getRating())
-                                .imageUrl(player.getImageUrl())
                                 .build();
 
         }

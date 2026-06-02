@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
@@ -30,6 +31,7 @@ public class Player {
   private String city;
   private long pricemoney;
   private Integer rating;
+  @Column(columnDefinition = "TEXT")
   private String imageUrl;
 
   @ManyToMany(mappedBy = "players")

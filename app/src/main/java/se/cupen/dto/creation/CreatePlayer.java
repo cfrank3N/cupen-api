@@ -1,5 +1,7 @@
 package se.cupen.dto.creation;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +19,6 @@ public class CreatePlayer {
   private String city;
   private Integer pricemoney;
   private Integer rating;
-  private String imageUrl;
+  private MultipartFile image;
 
 }
