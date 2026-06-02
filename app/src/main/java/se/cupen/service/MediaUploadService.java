@@ -1,5 +1,7 @@
 package se.cupen.service;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,10 +22,10 @@ public class MediaUploadService {
 
   public String uploadImage(MultipartFile file) {
     try {
-      cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
+      Map<?, ?> result = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
           "resource_type", "auto"));
 
-      return "Image uploaded";
+      return (String) result.get("url");
     } catch (Exception e) {
       throw new ValidationException("Bad boy", HttpStatus.SC_BAD_REQUEST);
     }
