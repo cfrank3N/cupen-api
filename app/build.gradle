@@ -45,6 +45,9 @@ dependencies {
     developmentOnly "org.testcontainers:postgresql:1.19.8"
     developmentOnly "org.testcontainers:jdbc:1.19.8"
 
+    // Cloudinary
+    implementation 'com.cloudinary:cloudinary-http5:2.3.2'
+
     // Tests
     testImplementation libs.junit.jupiter
 
