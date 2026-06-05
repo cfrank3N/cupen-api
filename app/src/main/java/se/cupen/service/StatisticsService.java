@@ -226,8 +226,6 @@ public class StatisticsService {
         int lostMatches = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getLosses).sum();
         int titles = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getTitles).sum();
 
-        // TODO: Fix titles
-        // Titles can be derived from a players won games tagged as MatchType.FINAL
         return SimplePlayerStatsDTO.builder()
                 .playedMatches(playedMatches)
                 .wonMatches(wonMatches)
