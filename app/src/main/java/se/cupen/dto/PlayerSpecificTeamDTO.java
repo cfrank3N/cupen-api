@@ -23,4 +23,5 @@ public class PlayerSpecificTeamDTO {
   private Integer scoredGoals;
   private Integer concededGoals;
   private Integer placement;
+  private Integer titles;
 }

@@ -38,6 +38,7 @@ import se.cupen.persistence.repository.TeamRepo;
 import se.cupen.persistence.repository.TournamentRepo;
 import se.cupen.util.EventType;
 import se.cupen.util.MatchResult;
+import se.cupen.util.MatchType;
 import se.cupen.util.ResponseData;
 
 @Service
@@ -223,14 +224,17 @@ public class StatisticsService {
         int wonMatches = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getWins).sum();
         int drawnMatches = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getDraws).sum();
         int lostMatches = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getLosses).sum();
+        int titles = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getTitles).sum();
 
         // TODO: Fix titles
+        // Titles can be derived from a players won games tagged as MatchType.FINAL
         return SimplePlayerStatsDTO.builder()
                 .playedMatches(playedMatches)
                 .wonMatches(wonMatches)
                 .drawnMatches(drawnMatches)
                 .lostMatches(lostMatches)
                 .goalDifference(scoredGoals + "-" + concededGoals)
+                .titles(titles)
                 .build();
 
     }
@@ -458,6 +462,7 @@ public class StatisticsService {
         int draws = 0;
         int scoredGoals = 0;
         int concededGoals = 0;
+        int titles = 0;
 
         for (Match match : teamMatches) {
 
@@ -486,6 +491,10 @@ public class StatisticsService {
                 losses++;
             }
 
+            if (teamGoals > opponentGoals && match.getMatchType().equals(MatchType.FINAL)) {
+                titles++;
+            }
+
         }
 
         return PlayerSpecificTeamDTO.builder()
@@ -497,6 +506,7 @@ public class StatisticsService {
                 .draws(draws)
                 .scoredGoals(scoredGoals)
                 .concededGoals(concededGoals)
+                .titles(titles)
                 .build();
 
     }
