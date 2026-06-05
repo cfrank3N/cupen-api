@@ -16,6 +16,7 @@ import lombok.Setter;
 public class PlayerViewStats {
   private String name;
   private String imageUrl;
+  private Integer rating;
   private List<PlayerSpecificMatchDTO> lastFiveMatches;
   private List<PlayerSpecificTeamDTO> formerTeams;
   private SimplePlayerStatsDTO stats;

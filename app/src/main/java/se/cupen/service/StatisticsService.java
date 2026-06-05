@@ -115,10 +115,12 @@ public class StatisticsService {
         List<HeadToHeadPlayerStats> statsAgainstAll = findStatsAgainsAllPlayers(player.getId().toString()).getObject();
         PlayerSpecificMatchDTO biggestWin = findBiggestWinByPlayer(player);
         PlayerSpecificMatchDTO biggestLoss = findBiggestLossByPlayer(player);
+        Integer rating = calculatePlayerRating(player, stats, teams);
 
         PlayerViewStats playerStats = PlayerViewStats.builder()
                 .name(player.getName())
                 .imageUrl(player.getImageUrl())
+                .rating(rating)
                 .lastFiveMatches(lastFiveMatches)
                 .formerTeams(teams)
                 .stats(stats)
@@ -165,6 +167,29 @@ public class StatisticsService {
         Long scoredGoals = findPlayersScoredGoals(player);
 
         return ResponseData.successful(scoredGoals, "Scored goals fetched");
+
+    }
+
+    // TODO: calculate rating of player
+    public Integer calculatePlayerRating(Player player, SimplePlayerStatsDTO playerStats,
+            List<PlayerSpecificTeamDTO> teams) {
+
+        int scoredTeamGoals = teams.stream().mapToInt(PlayerSpecificTeamDTO::getScoredGoals).sum();
+        int concededTeamGoals = teams.stream().mapToInt(PlayerSpecificTeamDTO::getConcededGoals).sum();
+        Long playerScoredGoals = findPlayersScoredGoals(player);
+        int playedMatches = playerStats.getPlayedMatches();
+
+        Double goalContribution = scoredTeamGoals > 0 ? (double) playerScoredGoals / scoredTeamGoals : 0;
+        Double winrate = playerStats.getPlayedMatches() > 0
+                ? ((double) playerStats.getWonMatches() + playerStats.getDrawnMatches() * 0.5)
+                        / playerStats.getPlayedMatches()
+                : 0.0;
+        Double goalDifference = playedMatches > 0
+                ? (double) (scoredTeamGoals - concededTeamGoals) / playedMatches
+                : 0;
+
+        Double rating = 40 + (goalContribution * 40) + (winrate * 15) + Math.min(goalDifference, 5) * 1;
+        return (int) Math.round(Math.max(0, Math.min(100, rating)));
 
     }
 
