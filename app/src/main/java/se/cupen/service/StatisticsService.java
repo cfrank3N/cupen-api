@@ -15,6 +15,7 @@ import se.cupen.dto.HeadToHeadPlayerStats;
 import se.cupen.dto.MatchDTO;
 import se.cupen.dto.PlayerDTO;
 import se.cupen.dto.PlayerStats;
+import se.cupen.dto.PlayerStatsAndTeams;
 import se.cupen.dto.PlayerTeamGoalStats;
 import se.cupen.dto.PlayerSpecificMatchDTO;
 import se.cupen.dto.PlayerSpecificTeamDTO;
@@ -225,6 +226,34 @@ public class StatisticsService {
         return teamStats;
     }
 
+    private List<PlayerSpecificTeamDTO> findAllTeamsByPlayer(Player player, List<Match> allMatches) {
+        List<Team> teams = player.getTeams();
+
+        List<PlayerSpecificTeamDTO> teamStats = teams.stream()
+                .map(team -> buildTeamStats(team, allMatches))
+                .toList();
+
+        return teamStats;
+    }
+
+    public ResponseData<List<PlayerDTO>> findAllPlayersAndCalculateRating() {
+        List<Player> players = playerRepo.findAll();
+        List<Match> matches = matchRepo.findAll();
+
+        List<PlayerDTO> playersToReturn = players.stream().map(player -> {
+            PlayerDTO playerToReturn = PlayerMapper.toDTO(player);
+
+            List<PlayerSpecificTeamDTO> teams = findAllTeamsByPlayer(player, matches);
+            SimplePlayerStatsDTO stats = findCompressedStatsForPlayer(player, matches);
+
+            playerToReturn.setRating(calculatePlayerRating(player, stats, teams));
+
+            return playerToReturn;
+        }).toList();
+
+        return ResponseData.successful(playersToReturn, "All players with rating fetched!");
+    }
+
     /**
      * @param playerId
      * @return
@@ -241,6 +270,30 @@ public class StatisticsService {
     private SimplePlayerStatsDTO findCompressedStatsForPlayer(Player player) {
 
         List<PlayerSpecificTeamDTO> playerTeamStats = findAllTeamsByPlayer(player);
+
+        int playedMatches = playerTeamStats.stream()
+                .mapToInt(stats -> stats.getLosses() + stats.getWins() + stats.getDraws()).sum();
+        int scoredGoals = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getScoredGoals).sum();
+        int concededGoals = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getConcededGoals).sum();
+        int wonMatches = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getWins).sum();
+        int drawnMatches = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getDraws).sum();
+        int lostMatches = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getLosses).sum();
+        int titles = playerTeamStats.stream().mapToInt(PlayerSpecificTeamDTO::getTitles).sum();
+
+        return SimplePlayerStatsDTO.builder()
+                .playedMatches(playedMatches)
+                .wonMatches(wonMatches)
+                .drawnMatches(drawnMatches)
+                .lostMatches(lostMatches)
+                .goalDifference(scoredGoals + "-" + concededGoals)
+                .titles(titles)
+                .build();
+
+    }
+
+    private SimplePlayerStatsDTO findCompressedStatsForPlayer(Player player, List<Match> allMatches) {
+
+        List<PlayerSpecificTeamDTO> playerTeamStats = findAllTeamsByPlayer(player, allMatches);
 
         int playedMatches = playerTeamStats.stream()
                 .mapToInt(stats -> stats.getLosses() + stats.getWins() + stats.getDraws()).sum();

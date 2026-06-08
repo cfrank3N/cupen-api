@@ -38,6 +38,11 @@ public class StatisticsController {
     return ResponseEntity.ok(statisticsService.allPlayers());
   }
 
+  @GetMapping("/players/rating")
+  public ResponseEntity<ResponseData<List<PlayerDTO>>> fetchAllPlayersWithRating() {
+    return ResponseEntity.ok(statisticsService.findAllPlayersAndCalculateRating());
+  }
+
   @GetMapping("/teams")
   public ResponseEntity<ResponseData<List<TeamDTO>>> fetchAllTeams() {
     return ResponseEntity.ok(statisticsService.allTeams());
