@@ -11,8 +11,8 @@ You need to have a Cloudinary media library set up.
 Then you need to set these env variables on the machine:
 
 ```
-CLOUDINARY_API_KEY
-CLOUDINARY_API_SECRET
-CLOUDINARY_CLOUD_NAME
+export CLOUDINARY_API_KEY=<your-api-key>
+export CLOUDINARY_API_SECRET=<your-api-secret>
+export CLOUDINARY_CLOUD_NAME=<your-cloudinary-cloud-name>
 ```
 You can get them from cloudinary when you've set up a media library.
